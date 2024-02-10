@@ -1,23 +1,23 @@
 // dotenv at the top
-require('dotenv').config()
+require('dotenv').config();
 require('express-group-routes');
 
-var createError = require('http-errors');
-var compression = require('compression');
-var helmet = require("helmet");
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var favicon = require('serve-favicon');
+const createError = require('http-errors');
+const compression = require('compression');
+const helmet = require('helmet');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const favicon = require('serve-favicon');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 
-var ErrorHandler = require('./middlewares/ErrorHandler');
+const ErrorHandler = require('./middlewares/ErrorHandler');
 
-var app = express();
+const app = express();
 app.locals.env = process.env;
 
 // view engine setup
@@ -38,18 +38,18 @@ app.use(compression()); // Compress all routes
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+      'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
     },
   }),
 );
 
 // Reduce Fingerprinting
-app.disable('x-powered-by')
+app.disable('x-powered-by');
 
 // ROUTES
 app.use('/', indexRouter);
 
-app.group("/api/v1", (router) => {
+app.group('/api/v1', (router) => {
   // PUBLIC ROUTES
   router.use('/auth', authRouter);
 
@@ -58,7 +58,7 @@ app.group("/api/v1", (router) => {
 });
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
