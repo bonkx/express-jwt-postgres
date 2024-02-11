@@ -2,26 +2,29 @@
 require('dotenv').config();
 require('express-group-routes');
 
-const createError = require('http-errors');
 const compression = require('compression');
 const helmet = require('helmet');
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const favicon = require('serve-favicon');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
+const routes = require('./src/api/index');
 
-const ErrorHandler = require('./middlewares/ErrorHandler');
+const middlewares = require('./src/middlewares/index');
 
 const app = express();
 app.locals.env = process.env;
 
+const corsOptions = {
+  origin: 'http://localhost:8000',
+};
+app.use(cors(corsOptions));
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
@@ -30,8 +33,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
-
-app.use(compression()); // Compress all routes
 
 // Add helmet to the middleware chain.
 // Set CSP headers to allow our Bootstrap and Jquery to be served
@@ -47,34 +48,20 @@ app.use(
 app.disable('x-powered-by');
 
 // ROUTES
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
+app.use('/', routes);
 
-app.group('/api/v1', (router) => {
-  // PUBLIC ROUTES
-  router.use('/auth', authRouter);
+// app.use(notFound);
+app.use(middlewares.notFound);
+app.use(middlewares.errorHandler);
 
-  // MIDDLEWARE ROUTES
-  router.use('/users', usersRouter);
-});
+app.use(compression()); // Compress all routes
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
-
-// error handler
-/**
- * Any error handler middleware must be added AFTER you define your routes.
- */
-app.use(ErrorHandler);
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
+// disable console.log system wide
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => { };
+  console.error = () => { };
+  console.debug = () => { };
+}
 
 module.exports = app;
