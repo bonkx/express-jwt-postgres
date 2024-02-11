@@ -1,13 +1,28 @@
 version: "3.8"
 services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - 5433:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # restart: unless-stopped
+
   web:
+    stdin_open: true
     build:
       context: .
-    command: sh -c "npm start"
+    # command: sh -c "npm start"
+    # volumes:
+    #   - ./dist:/app/dist
     environment:
       - NODE_ENV=production
     env_file:
       - .env
+    depends_on:
+      - postgres
     # ports:
     #   - "3000:3000"
 
@@ -16,3 +31,6 @@ services:
       context: ./nginx
     ports:
       - "80:80"
+
+volumes:
+  postgres_data:

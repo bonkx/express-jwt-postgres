@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -11,10 +12,13 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: '/',
-    //   filename: 'main.js',
+    // filename: 'app.js',
+    // filename: '[name].bundle.js',
     filename: '[name].js',
   },
   plugins: [
+    // to compress files
+    new CompressionPlugin(),
     // Clear out `build` directory between builds
     new CleanWebpackPlugin({
       cleanAfterEveryBuildPatterns: ['dist'],
@@ -31,10 +35,6 @@ module.exports = {
       patterns: [
         {
           from: path.resolve(__dirname, 'public'),
-          to: path.resolve(__dirname, 'dist/public'),
-        },
-        {
-          from: path.resolve(__dirname, 'bin'),
           to: path.resolve(__dirname, 'dist/public'),
         },
       ],
@@ -66,4 +66,5 @@ module.exports = {
     removeEmptyChunks: true,
     mergeDuplicateChunks: true,
   },
+  // externals: ['nock', 'mock-aws-s3', 'aws-sdk'],
 };

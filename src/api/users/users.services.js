@@ -1,72 +1,72 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { db } = require('../../utils/db');
 
 function findUserByEmail(email) {
-  return db.user.findUnique({
-    where: {
-      email,
-    },
-  });
+    return db.user.findUnique({
+        where: {
+            email,
+        },
+    });
 }
 
 function findUserByUsername(username) {
-  return db.user.findUnique({
-    where: {
-      username,
-    },
-  });
+    return db.user.findUnique({
+        where: {
+            username,
+        },
+    });
 }
 
 function findUserByBothUnique(email, username) {
-  return db.user.findFirst({
-    where: {
-      username,
-      email,
-    },
-  });
+    return db.user.findFirst({
+        where: {
+            username,
+            email,
+        },
+    });
 }
 
 function findUserById(id) {
-  return db.user.findUnique({
-    where: {
-      id,
-    },
-  });
+    return db.user.findUnique({
+        where: {
+            id,
+        },
+    });
 }
 
 async function createUser(req) {
-  const payload = {
-    username: req.body.username,
-    email: req.body.email,
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    password: req.body.password,
-    phone_number: req.body.phone,
-  };
+    const payload = {
+        username: req.body.username,
+        email: req.body.email,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        password: req.body.password,
+        phone_number: req.body.phone,
+    };
     // console.log(payload);
-  payload.password = bcrypt.hashSync(payload.password, 12);
-  console.log(payload);
-  // const user = await db.users.create({
-  //     data: payload,
-  // });
+    payload.password = bcrypt.hashSync(payload.password, 12);
+    console.log(payload);
+    // const user = await db.users.create({
+    //     data: payload,
+    // });
 
-  return db.profile.create({
-    data: {
-      bio: `${payload.first_name} ${payload.last_name}`,
-      user: {
-        connectOrCreate: {
-          where: { email: payload.email },
-          create: payload,
+    return db.profile.create({
+        data: {
+            bio: `${payload.first_name} ${payload.last_name}`,
+            user: {
+                connectOrCreate: {
+                    where: { email: payload.email },
+                    create: payload,
+                },
+            },
         },
-      },
-    },
-  });
+    });
 }
 
 module.exports = {
-  findUserByEmail,
-  findUserById,
-  createUser,
-  findUserByBothUnique,
-  findUserByUsername,
+    findUserByEmail,
+    findUserById,
+    createUser,
+    findUserByBothUnique,
+    findUserByUsername,
 };

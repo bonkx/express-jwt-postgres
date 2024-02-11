@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { errorRes, successRes, errData } = require('../common/response');
 const { saltRounds, jwtSecretSalt } = require('../utils/salt');
 

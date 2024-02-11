@@ -14,7 +14,15 @@ run:
 	npm run dev
 
 lint:
-	npm run eslint
+	npm run lint
 
-fix:
-	npm run eslint-fix
+clean:
+	rm -rf package-lock.json 
+	rm -rf node_modules/
+
+builserver:
+	docker-compose down
+	docker-compose build
+
+runserver:
+	docker-compose up --remove-orphans
