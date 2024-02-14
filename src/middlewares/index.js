@@ -46,12 +46,16 @@ function isAuthenticated(req, res, next) {
 }
 
 function onlyAdmin(req, res, next) {
-    if (req.user.type === 'admin') { return next(); }
+    if (req.user.type === 'admin') {
+        return next();
+    }
     return invalidToken(req, res);
 }
 
 function notOnlyMember(req, res, next) {
-    if (req.user.type === 'member') { return invalidToken(req, res); }
+    if (req.user.type === 'member') {
+        return invalidToken(req, res);
+    }
     return next();
 }
 

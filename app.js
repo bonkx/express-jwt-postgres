@@ -1,6 +1,7 @@
 // dotenv at the top
 require('dotenv').config();
 require('express-group-routes');
+require('module-alias/register');
 
 const compression = require('compression');
 const helmet = require('helmet');
@@ -11,7 +12,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const favicon = require('serve-favicon');
 
-const routes = require('./src/api/index');
+const routes = require('./src/routes/index.route');
 
 const middlewares = require('./src/middlewares/index');
 
@@ -19,7 +20,7 @@ const app = express();
 app.locals.env = process.env;
 
 const corsOptions = {
-  origin: 'http://localhost:8000',
+    origin: 'http://localhost:8000',
 };
 app.use(cors(corsOptions));
 
@@ -37,19 +38,24 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 // Add helmet to the middleware chain.
 // Set CSP headers to allow our Bootstrap and Jquery to be served
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
-    },
-  }),
+    helmet.contentSecurityPolicy({
+        directives: {
+            'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+        },
+    })
 );
 
 // Reduce Fingerprinting
 app.disable('x-powered-by');
 
+/* GET home page. */
+app.get('/', (req, res, next) => {
+    res.render('index', { title: 'Express' });
+});
+app.get('/ping', (req, res) => res.json('pong'));
+
 // ROUTES
-// app.use('/', indexRouter);
-app.use('/', routes);
+app.use('/api/v1/', routes);
 
 // app.use(notFound);
 app.use(middlewares.notFound);
@@ -57,9 +63,9 @@ app.use(middlewares.errorHandler);
 
 // disable console.log system wide
 if (process.env.NODE_ENV === 'production') {
-  console.log = () => { };
-  console.error = () => { };
-  console.debug = () => { };
+    console.log = () => {};
+    console.error = () => {};
+    console.debug = () => {};
 }
 
 module.exports = app;

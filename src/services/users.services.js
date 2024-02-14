@@ -1,5 +1,12 @@
 const bcrypt = require('bcryptjs');
-const { db } = require('../../utils/db');
+const { db } = require('../utils/db');
+const { exclude } = require('@utils/db_function');
+
+async function findAll() {
+    data = await db.user.findMany();
+    // return exclude(data, 'password');
+    return data;
+}
 
 function findUserByEmail(email) {
     return db.user.findUnique({
@@ -55,7 +62,9 @@ async function createUser(req) {
             bio: `${payload.first_name} ${payload.last_name}`,
             user: {
                 connectOrCreate: {
-                    where: { email: payload.email },
+                    where: {
+                        email: payload.email,
+                    },
                     create: payload,
                 },
             },
@@ -64,6 +73,7 @@ async function createUser(req) {
 }
 
 module.exports = {
+    findAll,
     findUserByEmail,
     findUserById,
     createUser,
