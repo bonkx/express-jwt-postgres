@@ -17,3 +17,27 @@ Prisma reset DB CLI commands:
 ```bash
 $ npx prisma db push --force-reset
 ```
+
+Sequelize CLI:
+
+```bash
+$ npx sequelize-cli init
+```
+
+Create a new migration:
+
+```bash
+$ npx sequelize-cli migration:create --name create_users
+```
+
+Running Migrations:
+
+```bash
+$ npx sequelize-cli db:migrate
+```
+
+Running Seeds:
+
+```bash
+$ npx sequelize-cli db:seed:all
+```

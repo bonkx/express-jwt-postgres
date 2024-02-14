@@ -1,11 +1,35 @@
 const bcrypt = require('bcryptjs');
-const { db } = require('../utils/db');
-const { exclude } = require('@utils/db_function');
+const db = require('@models');
+const User = db.users;
+const Role = db.roles;
+const Profile = db.profiles;
+const Op = db.Sequelize.Op;
 
-async function findAll() {
-    data = await db.user.findMany();
-    // return exclude(data, 'password');
-    return data;
+async function findAll(req) {
+    const search = req.query.search;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+    var condition = search
+        ? {
+              [Op.or]: [
+                  { first_name: { [Op.iLike]: `%${req.query.search}%` } },
+                  { last_name: { [Op.iLike]: `%${req.query.search}%` } },
+                  { email: { [Op.iLike]: `%${req.query.search}%` } },
+              ],
+          }
+        : null;
+
+    try {
+        data = await User.findAll({
+            where: condition,
+            offset: offset ?? 0,
+            limit: limit ?? 10,
+            include: [Profile, Role],
+        });
+        return data;
+    } catch (err) {
+        throw new Error(err.message);
+    }
 }
 
 function findUserByEmail(email) {

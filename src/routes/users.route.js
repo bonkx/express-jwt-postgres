@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => {
     try {
-        const user = await findAll();
+        const user = await findAll(req);
         successRes(res, user);
     } catch (err) {
         next(err);

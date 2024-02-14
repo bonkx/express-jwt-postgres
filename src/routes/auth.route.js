@@ -2,13 +2,9 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const {
-    findUserByEmail, createUser, findUserById, findUserByBothUnique, findUserByUsername,
-} = require('../services/users.services');
+const { findUserByEmail, createUser, findUserById, findUserByBothUnique, findUserByUsername } = require('../services/users.services');
 const { generateTokens } = require('../utils/jwt');
-const {
-    addRefreshTokenToWhitelist, findRefreshTokenById, deleteRefreshToken, revokeTokens,
-} = require('../services/auth.services');
+const { addRefreshTokenToWhitelist, findRefreshTokenById, deleteRefreshToken, revokeTokens } = require('../services/auth.services');
 const { hashToken } = require('../utils/hashToken');
 const { successRes, errData } = require('../common/response');
 const { isMatchingPassword, isValidPassword } = require('../middlewares/auth');
