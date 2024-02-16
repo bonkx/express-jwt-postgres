@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
     const Role = sequelize.define(
-        'roles',
+        'Role',
         {
             name: {
                 type: DataTypes.STRING(50),

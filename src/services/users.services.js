@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const db = require('@models');
-const User = db.users;
-const Role = db.roles;
-const Profile = db.profiles;
+const User = db.User;
+const Profile = db.Profile;
+const Role = db.Role;
 const Op = db.Sequelize.Op;
 
 async function findAll(req) {
@@ -33,7 +33,7 @@ async function findAll(req) {
 }
 
 function findUserByEmail(email) {
-    return db.user.findUnique({
+    return User.findUnique({
         where: {
             email,
         },
@@ -41,7 +41,7 @@ function findUserByEmail(email) {
 }
 
 function findUserByUsername(username) {
-    return db.user.findUnique({
+    return User.findUnique({
         where: {
             username,
         },
@@ -49,7 +49,7 @@ function findUserByUsername(username) {
 }
 
 function findUserByBothUnique(email, username) {
-    return db.user.findFirst({
+    return User.findFirst({
         where: {
             username,
             email,
@@ -58,7 +58,7 @@ function findUserByBothUnique(email, username) {
 }
 
 function findUserById(id) {
-    return db.user.findUnique({
+    return User.findUnique({
         where: {
             id,
         },
@@ -77,11 +77,11 @@ async function createUser(req) {
     // console.log(payload);
     payload.password = bcrypt.hashSync(payload.password, 12);
     console.log(payload);
-    // const user = await db.users.create({
+    // const user = await Users.create({
     //     data: payload,
     // });
 
-    return db.profile.create({
+    return Profile.create({
         data: {
             bio: `${payload.first_name} ${payload.last_name}`,
             user: {

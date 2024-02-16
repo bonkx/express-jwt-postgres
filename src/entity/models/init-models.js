@@ -1,9 +1,9 @@
 var DataTypes = require('sequelize').DataTypes;
-var _profiles = require('./profiles');
+var _profiles = require('./profile');
 var _refresh_token = require('./refresh_token');
-var _roles = require('./roles');
-var _todos = require('./todos');
-var _users = require('./users');
+var _roles = require('./role');
+var _todos = require('./todo.js');
+var _users = require('./user');
 
 function initModels(sequelize) {
     var profiles = _profiles(sequelize, DataTypes);

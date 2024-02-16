@@ -1,28 +1,24 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-    const Profile = sequelize.define(
-        'profiles',
+    const Todo = sequelize.define(
+        'Todo',
         {
-            bio: {
-                type: DataTypes.TEXT,
-                allowNull: false,
+            task: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
             },
-            birthday: {
+            due_date: {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
         },
         {
             sequelize,
-            tableName: 'profiles',
+            tableName: 'todos',
             timestamps: true,
             underscored: true,
         }
     );
 
-    Profile.associate = function (models) {
-        Profile.belongsTo(models.users);
-    };
-
-    return Profile;
+    return Todo;
 };

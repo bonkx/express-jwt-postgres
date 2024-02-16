@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
     const RefreshToken = sequelize.define(
-        'refresh_token',
+        'RefreshToken',
         {
             hashed_token: {
                 type: DataTypes.TEXT,
