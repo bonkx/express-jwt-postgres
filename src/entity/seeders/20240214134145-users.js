@@ -1,5 +1,3 @@
-'use strict';
-
 /** @type {import('sequelize-cli').Migration} */
 
 const bcrypt = require('bcryptjs');
@@ -14,7 +12,8 @@ module.exports = {
                 first_name: 'Admin',
                 last_name: 'Adm',
                 phone_number: '+6281234567890',
-                password: bcrypt.hashSync('P@ss4dmin', 12),
+                // password: bcrypt.hashSync('P@ss4dmin', 12),
+                password: process.env.ADMIN_PASS,
                 active: true,
                 role_id: 1,
                 created_at: new Date(),
@@ -25,6 +24,6 @@ module.exports = {
 
     async down(queryInterface, Sequelize) {
         // return await queryInterface.dropTable('users', { restartIdentity: true });
-        return queryInterface.bulkDelete('users', null, {});
+        return queryInterface.bulkDelete('users', { username: 'admin' }, {});
     },
 };

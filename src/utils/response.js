@@ -1,10 +1,10 @@
-function errorRes(res, err, errMsg = 'failed operation', statusCode = 500) {
+function errorRes(res, err, errMsg = 'Request failed to process', statusCode = 500) {
     console.error('ERROR:', err);
     return res.status(statusCode).json({
         success: false,
-        // error: errMsg,
         responseCode: statusCode,
         responseMessage: errMsg,
+        errors: err,
     });
 }
 

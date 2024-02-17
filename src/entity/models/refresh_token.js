@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
+
 module.exports = function (sequelize, DataTypes) {
-    const RefreshToken = sequelize.define(
+    const Model = sequelize.define(
         'RefreshToken',
         {
             hashed_token: {
@@ -18,7 +19,12 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'refresh_token',
             timestamps: true,
             underscored: true,
-        }
+        },
     );
-    return RefreshToken;
+
+    Model.associate = function (models) {
+        Model.belongsTo(models.User);
+    };
+
+    return Model;
 };

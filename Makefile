@@ -1,20 +1,20 @@
 flush:
 	npx prisma db push --force-reset
 
+migration:
+	npx makemigration --name $(name)
+
 migrate:
-	npx prisma migrate dev
+	npx sequelize db:migrate
 
 seed:
-	npx prisma db seed
+	npx sequelize db:seed:all
 
 build:
 	npm run build
 
 run:
 	npm run dev
-
-lint:
-	npm run lint
 
 clean:
 	rm -rf package-lock.json 

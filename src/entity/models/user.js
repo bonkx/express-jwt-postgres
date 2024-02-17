@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
-    const User = sequelize.define(
+
+module.exports = function User(sequelize, DataTypes) {
+    const Model = sequelize.define(
         'User',
         {
             username: {
@@ -67,25 +68,34 @@ module.exports = function (sequelize, DataTypes) {
                     exclude: ['password'],
                 },
             },
-        }
+        },
     );
 
-    User.associate = function (models) {
-        User.belongsTo(models.roles, {
+    Model.associate = (models) => {
+        Model.belongsTo(models.Role, {
             foreignKey: {
                 name: 'role_id',
             },
         });
-        User.hasOne(models.profiles, {
-            onDelete: 'CASCADE',
-        });
-        User.hasMany(models.todos, {
-            onDelete: 'CASCADE',
-        });
-        User.hasMany(models.refresh_token, {
-            onDelete: 'CASCADE',
-        });
+        // Model.hasOne(models.Profile, {
+        //     onDelete: 'CASCADE',
+        // });
+        // Model.hasMany(models.Todo, {
+        //     onDelete: 'CASCADE',
+        // });
+        // Model.hasMany(models.RefreshToken, {
+        //     onDelete: 'CASCADE',
+        // });
     };
 
-    return User;
+    Model.beforeCreate(async (md) => {
+        md.password = await md.generatePasswordHash();
+    });
+
+    Model.prototype.generatePasswordHash = async function () {
+        const saltRounds = process.env.SALT_ROUNDS;
+        return await bcrypt.hashSync(this.password, saltRounds);
+    };
+
+    return Model;
 };

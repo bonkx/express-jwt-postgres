@@ -1,4 +1,5 @@
-const { errorRes } = require('../common/response');
+/* eslint-disable camelcase */
+const { errorRes } = require('@src/utils/response');
 
 function isValidPassword(req, res, next) {
     const { password } = req.body;
@@ -17,7 +18,7 @@ function isValidPassword(req, res, next) {
 
 function isMatchingPassword(req, res, next) {
     const { password, password_confirm } = req.body;
-    if (password != password_confirm) {
+    if (password !== password_confirm) {
         const err = 'password dost not match!';
         const errMsg = 'Passwords does not match!';
         return errorRes(res, err, errMsg);

@@ -1,26 +1,25 @@
 const bcrypt = require('bcryptjs');
-const db = require('@models');
-const User = db.User;
-const Profile = db.Profile;
-const Role = db.Role;
-const Op = db.Sequelize.Op;
+const db = require('@src/entity/models');
+
+const { User, Profile, Role } = db;
+const { Op } = db.Sequelize;
 
 async function findAll(req) {
-    const search = req.query.search;
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    var condition = search
+    const { search } = req.query;
+    const { limit } = req.query;
+    const { offset } = req.query;
+    const condition = search
         ? {
-              [Op.or]: [
-                  { first_name: { [Op.iLike]: `%${req.query.search}%` } },
-                  { last_name: { [Op.iLike]: `%${req.query.search}%` } },
-                  { email: { [Op.iLike]: `%${req.query.search}%` } },
-              ],
-          }
+            [Op.or]: [
+                { first_name: { [Op.iLike]: `%${req.query.search}%` } },
+                { last_name: { [Op.iLike]: `%${req.query.search}%` } },
+                { email: { [Op.iLike]: `%${req.query.search}%` } },
+            ],
+        }
         : null;
 
     try {
-        data = await User.findAll({
+        const data = await User.findAll({
             where: condition,
             offset: offset ?? 0,
             limit: limit ?? 10,
@@ -33,7 +32,7 @@ async function findAll(req) {
 }
 
 function findUserByEmail(email) {
-    return User.findUnique({
+    return User.findOne({
         where: {
             email,
         },
@@ -41,7 +40,7 @@ function findUserByEmail(email) {
 }
 
 function findUserByUsername(username) {
-    return User.findUnique({
+    return User.findOne({
         where: {
             username,
         },
@@ -58,7 +57,7 @@ function findUserByBothUnique(email, username) {
 }
 
 function findUserById(id) {
-    return User.findUnique({
+    return User.findOne({
         where: {
             id,
         },
@@ -75,7 +74,6 @@ async function createUser(req) {
         phone_number: req.body.phone,
     };
     // console.log(payload);
-    payload.password = bcrypt.hashSync(payload.password, 12);
     console.log(payload);
     // const user = await Users.create({
     //     data: payload,

@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 // dotenv at the top
 require('dotenv').config();
-require('express-group-routes');
 require('module-alias/register');
+require('express-group-routes');
 
 const compression = require('compression');
 const helmet = require('helmet');
@@ -42,7 +43,7 @@ app.use(
         directives: {
             'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
         },
-    })
+    }),
 );
 
 // Reduce Fingerprinting
@@ -63,9 +64,9 @@ app.use(middlewares.errorHandler);
 
 // disable console.log system wide
 if (process.env.NODE_ENV === 'production') {
-    console.log = () => {};
-    console.error = () => {};
-    console.debug = () => {};
+    console.log = () => { };
+    console.error = () => { };
+    console.debug = () => { };
 }
 
 module.exports = app;

@@ -13,9 +13,9 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/',
-        // filename: 'app.js',
+        filename: 'app.js',
         // filename: '[name].bundle.js',
-        filename: '[name].js',
+        // filename: '[name].js',
     },
     plugins: [
         // to compress files
@@ -32,14 +32,14 @@ module.exports = {
         new webpack.LoaderOptionsPlugin({
             minimize: true,
         }),
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: path.resolve(__dirname, 'public'),
-                    to: path.resolve(__dirname, 'dist/public'),
-                },
-            ],
-        }),
+        // new CopyPlugin({
+        //     patterns: [
+        //         {
+        //             from: path.resolve(__dirname, 'public'),
+        //             to: path.resolve(__dirname, 'dist/public'),
+        //         },
+        //     ],
+        // }),
     ],
     target: 'node',
     module: {
@@ -58,15 +58,15 @@ module.exports = {
             },
         ],
     },
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-        },
-        mangleWasmImports: true,
-        removeAvailableModules: true,
-        removeEmptyChunks: true,
-        mergeDuplicateChunks: true,
-    },
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: 'all',
+    //     },
+    //     mangleWasmImports: true,
+    //     removeAvailableModules: true,
+    //     removeEmptyChunks: true,
+    //     mergeDuplicateChunks: true,
+    // },
     resolve: {
         modules: [__dirname, 'node_modules'],
         alias: npm_package._moduleAliases || {},

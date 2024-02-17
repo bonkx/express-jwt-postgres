@@ -1,16 +1,16 @@
-var DataTypes = require('sequelize').DataTypes;
-var _profiles = require('./profile');
-var _refresh_token = require('./refresh_token');
-var _roles = require('./role');
-var _todos = require('./todo.js');
-var _users = require('./user');
+const { DataTypes } = require('sequelize');
+const _profiles = require('./profile');
+const _refresh_token = require('./refresh_token');
+const _roles = require('./role');
+const _todos = require('./todo.js');
+const _users = require('./user');
 
 function initModels(sequelize) {
-    var profiles = _profiles(sequelize, DataTypes);
-    var refresh_token = _refresh_token(sequelize, DataTypes);
-    var roles = _roles(sequelize, DataTypes);
-    var todos = _todos(sequelize, DataTypes);
-    var users = _users(sequelize, DataTypes);
+    const profiles = _profiles(sequelize, DataTypes);
+    const refresh_token = _refresh_token(sequelize, DataTypes);
+    const roles = _roles(sequelize, DataTypes);
+    const todos = _todos(sequelize, DataTypes);
+    const users = _users(sequelize, DataTypes);
 
     users.belongsTo(roles, { as: 'role', foreignKey: 'role_id' });
     roles.hasMany(users, { as: 'users', foreignKey: 'role_id' });

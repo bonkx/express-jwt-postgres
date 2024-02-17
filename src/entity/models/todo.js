@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
+
 module.exports = function (sequelize, DataTypes) {
-    const Todo = sequelize.define(
+    const Model = sequelize.define(
         'Todo',
         {
             task: {
@@ -17,8 +18,12 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'todos',
             timestamps: true,
             underscored: true,
-        }
+        },
     );
 
-    return Todo;
+    Model.associate = function (models) {
+        Model.belongsTo(models.User);
+    };
+
+    return Model;
 };

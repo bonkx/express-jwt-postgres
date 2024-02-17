@@ -22,6 +22,6 @@ module.exports = {
     },
     rules: {
         indent: ['error', 4],
-        // quotes: [1, 'single', { avoidEscape: true }],
+        'no-console': 'off', // "warn" // "off"
     },
 };

@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
-    const Role = sequelize.define(
+
+module.exports = function Role(sequelize, DataTypes) {
+    const Model = sequelize.define(
         'Role',
         {
             name: {
@@ -17,8 +18,8 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'roles',
             timestamps: true,
             underscored: true,
-        }
+        },
     );
 
-    return Role;
+    return Model;
 };

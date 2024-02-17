@@ -16,9 +16,9 @@ function errorHandler(err, req, res, next) {
 
     res.status(statusCode).json({
         success: false,
-        // error: errMsg,
         responseCode: statusCode,
         responseMessage: errMsg,
+        // errors: err,
     });
 }
 

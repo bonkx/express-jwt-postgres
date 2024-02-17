@@ -1,8 +1,8 @@
 const express = require('express');
+const { errData, errorRes, successRes } = require('@src/utils/response');
 const { isAuthenticated } = require('../middlewares');
 const { findAll } = require('../services/users.services');
 // const { errData, errorRes, successRes } = require('./response');
-const { errData, errorRes, successRes } = require('@common/response');
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {

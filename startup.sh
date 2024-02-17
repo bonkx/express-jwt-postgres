@@ -1,5 +1,3 @@
 #!/bin/sh
-# cp .env ./prisma/.env
-npx prisma migrate dev
-npx prisma db seed
+npx sequelize db:migrate:all
 npm run start
