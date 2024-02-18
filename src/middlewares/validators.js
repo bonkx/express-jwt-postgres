@@ -1,21 +1,22 @@
-const { body } = require('express-validator');
+const { check } = require('express-validator');
 
 const loginValidator = [
-    body('email', 'Invalid does not Empty').not().isEmpty(),
-    body('email', 'Invalid email').isEmail(),
-    body('password', 'The minimum password length is 6 characters').isLength({ min: 6 }),
+    check('email', 'Email is required').not().isEmpty(),
+    check('email', 'Invalid email').isEmail(),
+    check('password', 'The minimum password length is 4 characters').isLength({ min: 4 }),
 ];
 
-const createValidator = [
-    body('user.username', 'username does not Empty').not().isEmpty(),
-    body('user.email', 'Invalid email').isEmail(),
-    body('user.age', 'username must be Alphanumeric').isAlphanumeric(),
-    body('user.birthday', 'Invalid birthday').isISO8601(), // check date is ISOString
-    body('user.password', 'password does not Empty').not().isEmpty(),
-    body('user.password', 'The minimum password length is 6 characters').isLength({ min: 6 }),
+const registerValidator = [
+    check('username', 'Username is required').not().isEmpty(),
+    check('email', 'Invalid email').isEmail(),
+    // check('age', 'username must be Alphanumeric').isAlphanumeric(),
+    // check('birthday', 'Invalid birthday').isISO8601(), // check date is ISOString
+    check('password', 'You must enter a password').not().isEmpty(),
+    check('password', 'The minimum password length is 4 characters').isLength({ min: 4 }),
+    check('password_confirm', 'Passwords does not match').custom((value, { req }) => (value === req.body.password)),
 ];
 
 module.exports = {
     loginValidator,
-    createValidator,
+    registerValidator,
 };

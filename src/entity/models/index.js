@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -32,8 +34,15 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.User.hasOne(db.Profile);
-db.Profile.belongsTo(db.User, { onDelete: 'CASCADE' });
+// ## Associations
+db.User.belongsTo(db.Role, { as: 'role', foreignKey: 'role_id' });
+db.Role.hasMany(db.User, { as: 'users', foreignKey: 'role_id' });
+db.Profile.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id' });
+db.RefreshToken.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+db.User.hasMany(db.RefreshToken, { as: 'refresh_tokens', foreignKey: 'user_id' });
+db.Todo.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+db.User.hasMany(db.Todo, { as: 'todos', foreignKey: 'user_id' });
 
 // db.sequelize
 //     // .sync({ force: true })
@@ -42,7 +51,7 @@ db.Profile.belongsTo(db.User, { onDelete: 'CASCADE' });
 //         console.log('============== Synced DB ==============');
 //     })
 //     .catch((err) => {
-//         console.log('Failed to sync db: ' + err.message);
+//         console.log(`Failed to sync db: ${err.message}`);
 //     });
 
 module.exports = db;

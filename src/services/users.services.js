@@ -1,13 +1,17 @@
-const bcrypt = require('bcryptjs');
+/* eslint-disable import/no-unresolved */
 const db = require('@src/entity/models');
+const { splitSortBy } = require('@src/utils/db');
 
 const { User, Profile, Role } = db;
 const { Op } = db.Sequelize;
 
 async function findAll(req) {
-    const { search } = req.query;
-    const { limit } = req.query;
-    const { offset } = req.query;
+    const {
+        search, limit, offset, sort,
+    } = req.query;
+
+    const sortBy = splitSortBy(sort);
+
     const condition = search
         ? {
             [Op.or]: [
@@ -21,9 +25,13 @@ async function findAll(req) {
     try {
         const data = await User.findAll({
             where: condition,
+            order: sortBy,
             offset: offset ?? 0,
             limit: limit ?? 10,
-            include: [Profile, Role],
+            include: [
+                { model: Profile, as: 'profile' },
+                { model: Role, as: 'role' },
+            ],
         });
         return data;
     } catch (err) {
@@ -32,36 +40,26 @@ async function findAll(req) {
 }
 
 function findUserByEmail(email) {
-    return User.findOne({
-        where: {
-            email,
-        },
-    });
+    return User.findOne({ where: { email } });
 }
 
 function findUserByUsername(username) {
-    return User.findOne({
-        where: {
-            username,
-        },
-    });
+    return User.findOne({ where: { username } });
 }
 
 function findUserByBothUnique(email, username) {
-    return User.findFirst({
+    return User.findAll({
         where: {
-            username,
-            email,
+            [Op.or]: [
+                { username: { [Op.endsWith]: `%${username}%` } },
+                { email: { [Op.endsWith]: `%${email}%` } },
+            ],
         },
     });
 }
 
 function findUserById(id) {
-    return User.findOne({
-        where: {
-            id,
-        },
-    });
+    return User.findOne({ where: { id } });
 }
 
 async function createUser(req) {
@@ -75,23 +73,22 @@ async function createUser(req) {
     };
     // console.log(payload);
     console.log(payload);
-    // const user = await Users.create({
-    //     data: payload,
-    // });
+    const user = await User.create(payload);
+    return user;
 
-    return Profile.create({
-        data: {
-            bio: `${payload.first_name} ${payload.last_name}`,
-            user: {
-                connectOrCreate: {
-                    where: {
-                        email: payload.email,
-                    },
-                    create: payload,
-                },
-            },
-        },
-    });
+    // return Profile.create({
+    //     data: {
+    //         bio: `${payload.first_name} ${payload.last_name}`,
+    //         user: {
+    //             connectOrCreate: {
+    //                 where: {
+    //                     email: payload.email,
+    //                 },
+    //                 create: payload,
+    //             },
+    //         },
+    //     },
+    // });
 }
 
 module.exports = {

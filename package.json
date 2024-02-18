@@ -69,10 +69,6 @@
   },
   "_moduleAliases": {
     "@root": ".",
-    "@src": "src",
-    "@common": "src/common",
-    "@utils": "src/utils",
-    "@services": "src/services",
-    "@models": "src/entity/models"
+    "@src": "src"
   }
 }

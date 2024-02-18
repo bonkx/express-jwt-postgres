@@ -1,5 +1,6 @@
-const { db } = require('../utils/db');
-const { hashToken } = require('../utils/hashToken');
+/* eslint-disable import/no-unresolved */
+const db = require('@src/entity/models');
+const { hashToken } = require('@src/utils/hashToken');
 
 function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
     return db.refreshToken.create({

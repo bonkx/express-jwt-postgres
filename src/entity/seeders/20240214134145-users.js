@@ -1,6 +1,7 @@
-/** @type {import('sequelize-cli').Migration} */
-
+/* eslint-disable no-unused-vars */
 const bcrypt = require('bcryptjs');
+
+/** @type {import('sequelize-cli').Migration} */
 
 module.exports = {
     async up(queryInterface, Sequelize) {
@@ -12,8 +13,7 @@ module.exports = {
                 first_name: 'Admin',
                 last_name: 'Adm',
                 phone_number: '+6281234567890',
-                // password: bcrypt.hashSync('P@ss4dmin', 12),
-                password: process.env.ADMIN_PASS,
+                password: bcrypt.hashSync(process.env.ADMIN_PASS, 12),
                 active: true,
                 role_id: 1,
                 created_at: new Date(),

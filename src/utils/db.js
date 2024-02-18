@@ -1,5 +1,14 @@
-const { PrismaClient } = require('@prisma/client');
+// const { PrismaClient } = require('@prisma/client');
 
-const db = new PrismaClient();
+// const db = new PrismaClient();
 
-module.exports = { db };
+function splitSortBy(sort) {
+    const sortBy = [];
+    if (sort) {
+        const sp = sort.split('|');
+        sortBy.push(sp);
+    }
+    return sortBy;
+}
+
+module.exports = { splitSortBy };

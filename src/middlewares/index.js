@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { onlyAdmin, onlyMember } = require('./auth');
 
 function notFound(req, res, next) {
     res.status(404);
@@ -45,22 +46,10 @@ function isAuthenticated(req, res, next) {
     return next();
 }
 
-function onlyAdmin(req, res, next) {
-    if (req.user.type === 'admin') {
-        return next();
-    }
-    return invalidToken(req, res);
-}
-
-function notOnlyMember(req, res, next) {
-    if (req.user.type === 'member') {
-        return invalidToken(req, res);
-    }
-    return next();
-}
-
 module.exports = {
     notFound,
     errorHandler,
     isAuthenticated,
+    onlyAdmin,
+    onlyMember,
 };

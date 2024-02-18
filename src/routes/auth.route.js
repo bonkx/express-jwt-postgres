@@ -1,29 +1,30 @@
+/* eslint-disable import/no-unresolved */
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
-const { loginValidator } = require('@src/middlewares/validators');
-const { successRes, errData, errorRes } = require('@src/utils/response');
+const { loginValidator, registerValidator } = require('@src/middlewares/validators');
 const {
-    findUserByEmail, createUser, findUserById, findUserByBothUnique, findUserByUsername,
-} = require('../services/users.services');
-const { generateTokens } = require('../utils/jwt');
+    findUserByEmail, createUser, findUserById, findUserByUsername,
+} = require('@src/services/users.services');
 const {
     addRefreshTokenToWhitelist, findRefreshTokenById, deleteRefreshToken, revokeTokens,
-} = require('../services/auth.services');
-const { hashToken } = require('../utils/hashToken');
-const { isMatchingPassword, isValidPassword } = require('../middlewares/auth');
+} = require('@src/services/auth.services');
+const { successRes, errorRes } = require('@src/utils/response');
+const { generateTokens } = require('@src/utils/jwt');
+const { hashToken } = require('@src/utils/hashToken');
 
 const router = express.Router();
 
-router.post('/register', [isValidPassword, isMatchingPassword], async (req, res, next) => {
+router.post('/register', registerValidator, async (req, res, next) => {
     try {
-        const { email, password, username } = req.body;
-        if (!email || !password) {
-            res.status(400);
-            throw new Error('You must provide an email and a password.');
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            errorRes(res, errors.array(), 400);
         }
+
+        const { email, username } = req.body;
 
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -39,7 +40,7 @@ router.post('/register', [isValidPassword, isMatchingPassword], async (req, res,
 
         const user = await createUser(req);
 
-        successRes(res, user, 'Registration has been successfully processed');
+        successRes(res, user, 200, 'Registration has been successfully processed');
     } catch (err) {
         next(err);
     }
@@ -49,8 +50,7 @@ router.post('/login', loginValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            res.status(400);
-            errorRes(res, errors.array());
+            errorRes(res, errors.array(), 400);
         }
 
         const { email, password } = req.body;

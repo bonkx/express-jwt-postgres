@@ -1,3 +1,8 @@
+/* eslint-disable func-names */
+/* eslint-disable max-len */
+/* eslint-disable no-plusplus */
+/* eslint-disable prefer-spread */
+/* eslint-disable no-shadow */
 const Sequelize = require('sequelize');
 
 /**

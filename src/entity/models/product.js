@@ -7,10 +7,10 @@ module.exports = (sequelize, DataTypes) => {
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
-        static associate(models) {
-            // define association here
-            Product.belongsTo(models.User);
-        }
+        // static associate(models) {
+        //     // define association here
+        //     // Product.belongsTo(models.User);
+        // }
     }
     Product.init(
         {
@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: 'Product',
             tableName: 'products',
             timestamps: true,
             underscored: true,

@@ -31,17 +31,6 @@
                     "allowNull": false,
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "UserId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "users",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "user_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -76,7 +65,7 @@
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
                 },
-                "UserId": {
+                "user_id": {
                     "allowNull": true,
                     "references": {
                         "model": "users",
@@ -123,7 +112,7 @@
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
                 },
-                "UserId": {
+                "user_id": {
                     "allowNull": true,
                     "references": {
                         "model": "users",
@@ -200,7 +189,7 @@
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
                 },
-                "UserId": {
+                "user_id": {
                     "allowNull": true,
                     "references": {
                         "model": "users",
@@ -286,7 +275,6 @@
                 },
                 "role_id": {
                     "allowNull": true,
-                    "name": "role_id",
                     "references": {
                         "model": "roles",
                         "key": "id"
@@ -300,5 +288,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 3
 }

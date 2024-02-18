@@ -1,6 +1,4 @@
-const Sequelize = require('sequelize');
-
-module.exports = function (sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
     const Model = sequelize.define(
         'Todo',
         {
@@ -20,10 +18,6 @@ module.exports = function (sequelize, DataTypes) {
             underscored: true,
         },
     );
-
-    Model.associate = function (models) {
-        Model.belongsTo(models.User);
-    };
 
     return Model;
 };

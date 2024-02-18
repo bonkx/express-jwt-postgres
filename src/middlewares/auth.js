@@ -1,32 +1,21 @@
-/* eslint-disable camelcase */
-const { errorRes } = require('@src/utils/response');
-
-function isValidPassword(req, res, next) {
-    const { password } = req.body;
-    if (!password) {
-        const err = `invalid is required: ${password}`;
-        const errMsg = 'Password is required';
-        return errorRes(res, err, errMsg);
+function onlyAdmin(req, res, next) {
+    if (req.user.role.name === 'admin') {
+        return next();
     }
-    if (password.length < 6) {
-        const err = `invalid password: ${password}`;
-        const errMsg = 'Password is too short';
-        return errorRes(res, err, errMsg);
-    }
-    return next();
+    res.status(403);
+    throw new Error('Un-Authorized');
 }
 
-function isMatchingPassword(req, res, next) {
-    const { password, password_confirm } = req.body;
-    if (password !== password_confirm) {
-        const err = 'password dost not match!';
-        const errMsg = 'Passwords does not match!';
-        return errorRes(res, err, errMsg);
+function onlyMember(req, res, next) {
+    if (req.user.type === 'member') {
+        return next();
     }
-    return next();
+
+    res.status(403);
+    throw new Error('Un-Authorized');
 }
 
 module.exports = {
-    isValidPassword,
-    isMatchingPassword,
+    onlyAdmin,
+    onlyMember,
 };

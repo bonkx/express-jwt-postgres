@@ -1,6 +1,10 @@
-const Sequelize = require('sequelize');
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-unresolved */
 
-module.exports = function User(sequelize, DataTypes) {
+const { generatePasswordHash } = require('@src/utils/salt');
+
+module.exports = (sequelize, DataTypes) => {
     const Model = sequelize.define(
         'User',
         {
@@ -52,6 +56,7 @@ module.exports = function User(sequelize, DataTypes) {
                 get() {
                     return `${this.first_name} ${this.last_name}`;
                 },
+                // eslint-disable-next-line no-unused-vars
                 set(value) {
                     throw new Error('Do not try to set the `fullName` value!');
                 },
@@ -68,34 +73,17 @@ module.exports = function User(sequelize, DataTypes) {
                     exclude: ['password'],
                 },
             },
+            hooks: {
+                beforeCreate: async (record, options) => {
+                    record.dataValues.password = await generatePasswordHash(
+                        record.dataValues.password,
+                    );
+                },
+                beforeUpdate: (record, options) => {
+                },
+            },
         },
     );
-
-    Model.associate = (models) => {
-        Model.belongsTo(models.Role, {
-            foreignKey: {
-                name: 'role_id',
-            },
-        });
-        // Model.hasOne(models.Profile, {
-        //     onDelete: 'CASCADE',
-        // });
-        // Model.hasMany(models.Todo, {
-        //     onDelete: 'CASCADE',
-        // });
-        // Model.hasMany(models.RefreshToken, {
-        //     onDelete: 'CASCADE',
-        // });
-    };
-
-    Model.beforeCreate(async (md) => {
-        md.password = await md.generatePasswordHash();
-    });
-
-    Model.prototype.generatePasswordHash = async function () {
-        const saltRounds = process.env.SALT_ROUNDS;
-        return await bcrypt.hashSync(this.password, saltRounds);
-    };
 
     return Model;
 };
