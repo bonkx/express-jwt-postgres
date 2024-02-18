@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-unresolved */
-
-const { generatePasswordHash } = require('@src/utils/salt');
+const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
     const Model = sequelize.define(
@@ -75,9 +74,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             hooks: {
                 beforeCreate: async (record, options) => {
-                    record.dataValues.password = await generatePasswordHash(
-                        record.dataValues.password,
-                    );
+                    const saltRounds = Math.floor(Math.random() * 10);
+                    // eslint-disable-next-line max-len
+                    record.dataValues.password = bcrypt.hashSync(record.dataValues.password, saltRounds);
                 },
                 beforeUpdate: (record, options) => {
                 },

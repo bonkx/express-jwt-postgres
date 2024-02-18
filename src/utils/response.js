@@ -17,6 +17,21 @@ function successRes(res, data, statusCode = 200, sucMsg = 'Request has been proc
     });
 }
 
+function paginationRes(res, pagingData, statusCode = 200, sucMsg = 'Request has been processed successfully') {
+    const {
+        count, totalPages, currentPage, data,
+    } = pagingData;
+    return res.status(statusCode).json({
+        success: true,
+        responseCode: statusCode,
+        responseMessage: sucMsg,
+        count,
+        totalPages,
+        currentPage,
+        data,
+    });
+}
+
 function errData(res, errMsg = 'failed operation') {
     return (err, data) => {
         if (err) return errorRes(res, err, 500, errMsg);
@@ -24,4 +39,6 @@ function errData(res, errMsg = 'failed operation') {
     };
 }
 
-module.exports = { errorRes, successRes, errData };
+module.exports = {
+    errorRes, successRes, paginationRes, errData,
+};

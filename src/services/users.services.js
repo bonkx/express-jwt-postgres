@@ -1,14 +1,17 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 const db = require('@src/entity/models');
-const { splitSortBy } = require('@src/utils/db');
+const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
 
 const { User, Profile, Role } = db;
 const { Op } = db.Sequelize;
 
 async function findAll(req) {
     const {
-        search, limit, offset, sort,
+        search, page, page_size, sort,
     } = req.query;
+
+    const { limit, offset } = getPagination(page, page_size);
 
     const sortBy = splitSortBy(sort);
 
@@ -23,17 +26,20 @@ async function findAll(req) {
         : null;
 
     try {
-        const data = await User.findAll({
+        const data = await User.findAndCountAll({
             where: condition,
             order: sortBy,
-            offset: offset ?? 0,
-            limit: limit ?? 10,
+            offset,
+            limit,
             include: [
                 { model: Profile, as: 'profile' },
                 { model: Role, as: 'role' },
             ],
         });
-        return data;
+        const response = getPagingData(data, page, limit);
+        // console.log(response);
+        // console.log({ limit, offset });
+        return response;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -63,39 +69,72 @@ function findUserById(id) {
 }
 
 async function createUser(req) {
-    const payload = {
-        username: req.body.username,
-        email: req.body.email,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        password: req.body.password,
-        phone_number: req.body.phone,
-    };
-    // console.log(payload);
-    console.log(payload);
-    const user = await User.create(payload);
-    return user;
+    try {
+        const payload = {
+            username: req.body.username,
+            email: req.body.email,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            password: req.body.password,
+            phone_number: req.body.phone,
+            role_id: req.body.role_id ?? 2,
+        };
+        // console.log(payload);
+        const user = await User.create(payload);
 
-    // return Profile.create({
-    //     data: {
-    //         bio: `${payload.first_name} ${payload.last_name}`,
-    //         user: {
-    //             connectOrCreate: {
-    //                 where: {
-    //                     email: payload.email,
-    //                 },
-    //                 create: payload,
-    //             },
-    //         },
-    //     },
-    // });
+        // create user profile
+        await Profile.create({
+            bio: `${payload.first_name} ${payload.last_name}`,
+            user_id: user.id,
+        });
+
+        return user;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+async function getUser(req) {
+    try {
+        const obj = await User.findByPk(req.params.id, {
+            include: [
+                { model: Profile, as: 'profile' },
+                { model: Role, as: 'role' },
+            ],
+        });
+        return obj;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+async function updateUser(req) {
+    try {
+        console.log(req.body);
+        const obj = await User.findByPk(req.params.id);
+        return obj;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+async function deleteUser(id) {
+    try {
+        const obj = await User.findByPk(id);
+        return obj;
+    } catch (err) {
+        throw new Error(err.message);
+    }
 }
 
 module.exports = {
     findAll,
+    createUser,
+    getUser,
+    updateUser,
+    deleteUser,
     findUserByEmail,
     findUserById,
-    createUser,
     findUserByBothUnique,
     findUserByUsername,
 };

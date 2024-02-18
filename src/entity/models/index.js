@@ -38,7 +38,7 @@ db.Sequelize = Sequelize;
 db.User.belongsTo(db.Role, { as: 'role', foreignKey: 'role_id' });
 db.Role.hasMany(db.User, { as: 'users', foreignKey: 'role_id' });
 db.Profile.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
-db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id' });
+db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id', onDelete: 'CASCADE' });
 db.RefreshToken.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
 db.User.hasMany(db.RefreshToken, { as: 'refresh_tokens', foreignKey: 'user_id' });
 db.Todo.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
