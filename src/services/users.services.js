@@ -77,7 +77,7 @@ async function createUser(req) {
             last_name: req.body.last_name,
             password: req.body.password,
             phone_number: req.body.phone,
-            role_id: req.body.role_id ?? 2,
+            role_id: 2,
         };
         // console.log(payload);
         const user = await User.create(payload);
@@ -88,6 +88,7 @@ async function createUser(req) {
             user_id: user.id,
         });
 
+        delete user.password;
         return user;
     } catch (err) {
         throw new Error(err.message);
@@ -118,10 +119,9 @@ async function updateUser(req) {
     }
 }
 
-async function deleteUser(id) {
+async function deleteUser(req) {
     try {
-        const obj = await User.findByPk(id);
-        return obj;
+        return await User.destroy({ where: { id: req.params.id }, force: true });
     } catch (err) {
         throw new Error(err.message);
     }

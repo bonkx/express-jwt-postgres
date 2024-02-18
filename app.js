@@ -3,7 +3,7 @@
 require('dotenv').config();
 require('module-alias/register');
 require('express-group-routes');
-
+const rfs = require('rotating-file-stream');
 const compression = require('compression');
 const helmet = require('helmet');
 const express = require('express');
@@ -20,16 +20,31 @@ const middlewares = require('./src/middlewares/index');
 const app = express();
 app.locals.env = process.env;
 
+// create a rotating write stream
+const accessLogStream = rfs.createStream('access.log', {
+    interval: '1d', // rotate daily
+    path: path.join(__dirname, 'log'),
+});
+
+// setup the logger
+// log only 4xx and 5xx responses to console
+app.use(logger('dev', {
+    skip(req, res) { return res.statusCode < 400; },
+}));
+// log all requests to access.log
+app.use(logger(
+    ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] - :response-time ms',
+    { stream: accessLogStream },
+));
+
 const corsOptions = {
     origin: 'http://localhost:8000',
 };
 app.use(cors(corsOptions));
 
-app.use(compression()); // Compress all routes
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -48,6 +63,7 @@ app.use(
 
 // Reduce Fingerprinting
 app.disable('x-powered-by');
+app.use(compression()); // Compress all routes
 
 /* GET home page. */
 app.get('/', (req, res, next) => {
@@ -55,10 +71,9 @@ app.get('/', (req, res, next) => {
 });
 app.get('/ping', (req, res) => res.json('pong'));
 
-// ROUTES
+// API ROUTES
 app.use('/api/v1/', routes);
 
-// app.use(notFound);
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 

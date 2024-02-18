@@ -1,22 +1,27 @@
 # express-jwt-postgres
 
-Express JS JWT Postgres with Prisma ORM
+Express JS JWT Postgres with Sequelize ORM
 
-https://github.com/dividedbynil/ko-architecture/tree/master  
-https://dev.to/mihaiandrei97/jwt-authentication-using-prisma-and-express-37nk  
-https://jwt-keys.21no.de/
-https://www.npmjs.com/package/sequelize6-auto-migrations
-
-Prisma migrate CLI commands:
+## How to Run
 
 ```bash
-$ npx prisma migrate dev --name init
-```
+# clone the repo
+$ git clone repo
 
-Prisma reset DB CLI commands:
+# go into repo's directory
+$ cd repo
 
-```bash
-$ npx prisma db push --force-reset
+# copy and edit env file
+$ cp .env.example .env
+
+# migrate database
+$ npx sequelize db:migrate
+
+# seeds data to database such as admin user, status, roles
+$ npx sequelize db:seed:all
+
+# start app
+$ npm run dev
 ```
 
 Sequelize CLI:
@@ -42,3 +47,62 @@ Running Seeds:
 ```bash
 $ npx sequelize-cli db:seed:all
 ```
+
+### Todo List
+
+- [x] Favicon using serve-favicon
+- [x] Morgan Log file
+- [x] Express Architecture Pattern
+  - [x] Routes (bridge - logic process)
+  - [x] Services (controller)
+  - [x] Sequelize ORM (process to DB)
+  - [x] Error Handling
+  - [x] Validator using express-validator
+- [x] DB
+  - [x] Make migration files using sequelize6-auto-migrations
+  - [x] DB migrate using sequelize db:migrate
+- [ ] Auth
+  - [ ] Register, Send verification Email
+  - [ ] Send Email with Goroutines
+  - [ ] Open Link Verification Email
+  - [ ] Resend Verification Email Code
+  - [ ] Login
+  - [ ] JWT Auth Middleware + Redis
+  - [ ] Refresh Token
+  - [ ] Forgot Password, send email OTP
+  - [ ] Forgot Password Verify OTP
+  - [ ] Reset Password
+  - [ ] Logout
+- [ ] Account
+  - [ ] Get Profile
+  - [ ] Update Profile
+  - [ ] Update Photo Profile + thumbnail
+  - [ ] Upload File, upload image(compressed)
+  - [ ] Change Password
+  - [ ] Deletion Account with OTP
+  - [ ] Recover deleted account (Admin role)
+  - [ ] User Activity with interval (last login at, ip address in middleware)
+- [ ] Golang Swagger
+- [ ] CRUD
+  - [ ] Pagination with custom Paginate [pagination-using-gorm-scopes](https://dev.to/rafaelgfirmino/pagination-using-gorm-scopes-3k5f)
+  - [ ] Sort + Search function in List Data
+  - [ ] Create Data
+  - [ ] Edit Data
+  - [ ] Delete Data
+- [ ] Preload Model (Associations Struct)
+- [ ] Struct MarshalJSON (Custom representation)
+- [ ] Open API with API KEY middleware
+- [ ] Upload Files
+- [ ] Remove Files
+- [ ] Upload Videos
+- [ ] Create thumbnail from videos with ffmpeg
+- [ ] Upload Images and Compress Image with libvips
+- [ ] Create thumbnail from image
+- [ ] Image Processing with [libvips](https://www.libvips.org/)
+
+### Credits
+https://github.com/dividedbynil/ko-architecture/tree/master  
+https://dev.to/mihaiandrei97/jwt-authentication-using-prisma-and-express-37nk  
+https://jwt-keys.21no.de/
+https://www.npmjs.com/package/sequelize6-auto-migrations
+
