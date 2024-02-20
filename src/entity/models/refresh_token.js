@@ -1,6 +1,19 @@
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-    const Model = sequelize.define(
-        'RefreshToken',
+    class RefreshToken extends Model {
+        /**
+         * Helper method for defining associations.
+         * This method is not a part of Sequelize lifecycle.
+         * The `models/index` file will call this method automatically.
+         */
+        static associate(models) {
+            // define association here
+            // this.belongsTo(models.User, { as: 'user' });
+            this.belongsTo(models.User, { as: 'user', foreignKey: 'user_id' });
+        }
+    }
+    RefreshToken.init(
         {
             hashed_token: {
                 type: DataTypes.TEXT,
@@ -14,11 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            tableName: 'refresh_token',
+            tableName: 'refresh_tokens',
             timestamps: true,
             underscored: true,
         },
     );
 
-    return Model;
+    return RefreshToken;
 };

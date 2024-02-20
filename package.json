@@ -12,7 +12,7 @@
     "lint": "eslint --fix src",
     "build": "webpack",
     "prod": "node ./dist/app.js",
-    "migration": "npx makemigration",
+    "makemigration": "npx makemigration",
     "migrate": "npx sequelize db:migrate",
     "seed": "npx sequelize db:seed:all"
   },

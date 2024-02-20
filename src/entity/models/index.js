@@ -34,18 +34,35 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// ## Associations
-db.User.belongsTo(db.Role, { as: 'role', foreignKey: 'role_id' });
-db.Role.hasMany(db.User, { as: 'users', foreignKey: 'role_id' });
-db.Profile.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
-db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id', onDelete: 'CASCADE' });
-db.RefreshToken.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
-db.User.hasMany(db.RefreshToken, { as: 'refresh_tokens', foreignKey: 'user_id', onDelete: 'CASCADE' });
-db.Todo.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
-db.User.hasMany(db.Todo, { as: 'todos', foreignKey: 'user_id', onDelete: 'CASCADE' });
+// db.User.belongsTo(db.Role, { as: 'role', foreignKey: 'role_id' });
+// db.Role.hasMany(db.User, { as: 'users', foreignKey: 'role_id' });
+// db.Profile.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+// db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id' });
+// db.RefreshToken.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+// db.User.hasMany(db.RefreshToken, { as: 'refresh_tokens', foreignKey: 'user_id' });
+// db.Todo.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+// db.User.hasMany(db.Todo, { as: 'todos', foreignKey: 'user_id' });
+// db.Product.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
+// db.User.hasMany(db.Product, { as: 'products', foreignKey: 'user_id' });
+
+async function syncAll() {
+    // await db.User.sync({ force: true });
+    // await db.Profile.sync({ force: true });
+    // await db.RefreshToken.sync({ force: true });
+    // await db.Todo.sync({ force: true });
+    // await db.Product.sync({ force: true });
+    // await db.Role.sync({ force: true });
+    return '============== Synced DB ==============';
+}
+
+syncAll().then((res) => {
+    console.log(res);
+}).catch((err) => {
+    console.log(`Failed to sync db: ${err.message}`);
+});
 
 // db.sequelize
-//     // .sync({ force: true })
+//     .sync({ force: true })
 //     // .drop()
 //     .then(() => {
 //         console.log('============== Synced DB ==============');

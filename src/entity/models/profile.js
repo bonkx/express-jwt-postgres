@@ -1,6 +1,18 @@
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-    const Model = sequelize.define(
-        'Profile',
+    class Profile extends Model {
+        /**
+         * Helper method for defining associations.
+         * This method is not a part of Sequelize lifecycle.
+         * The `models/index` file will call this method automatically.
+         */
+        static associate(models) {
+            // define association here
+            this.belongsTo(models.User, { as: 'user', foreignKey: 'user_id' });
+        }
+    }
+    Profile.init(
         {
             bio: {
                 type: DataTypes.TEXT,
@@ -19,5 +31,5 @@ module.exports = (sequelize, DataTypes) => {
         },
     );
 
-    return Model;
+    return Profile;
 };

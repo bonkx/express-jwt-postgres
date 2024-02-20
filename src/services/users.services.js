@@ -88,7 +88,6 @@ async function createUser(req) {
             user_id: user.id,
         });
 
-        delete user.password;
         return user;
     } catch (err) {
         throw new Error(err.message);
@@ -121,7 +120,7 @@ async function updateUser(req) {
 
 async function deleteUser(req) {
     try {
-        return await User.destroy({ where: { id: req.params.id }, force: true });
+        return await User.destroy({ where: { id: req.params.id } });
     } catch (err) {
         throw new Error(err.message);
     }

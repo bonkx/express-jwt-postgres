@@ -31,6 +31,28 @@
                     "allowNull": false,
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
+                },
+                "user_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "UserId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -79,8 +101,8 @@
             },
             "indexes": []
         },
-        "refresh_token": {
-            "tableName": "refresh_token",
+        "refresh_tokens": {
+            "tableName": "refresh_tokens",
             "schema": {
                 "id": {
                     "allowNull": false,
@@ -113,6 +135,17 @@
                     "seqType": "Sequelize.DATE"
                 },
                 "user_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "UserId": {
                     "allowNull": true,
                     "references": {
                         "model": "users",
@@ -190,6 +223,17 @@
                     "seqType": "Sequelize.DATE"
                 },
                 "user_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "UserId": {
                     "allowNull": true,
                     "references": {
                         "model": "users",
@@ -288,5 +332,5 @@
             "indexes": []
         }
     },
-    "revision": 3
+    "revision": 1
 }
