@@ -28,17 +28,18 @@ function isAuthenticated(req, res, next) {
 
     if (!authorization) {
         res.status(401);
-        throw new Error('Un-Authorized');
+        throw new Error('Authentication failed');
     }
 
     try {
         const token = authorization.split(' ')[1];
         const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-        req.payload = payload;
+        req.user = payload;
+        // console.log('user: ', payload);
     } catch (err) {
         res.status(401);
         if (err.name === 'TokenExpiredError') {
-            throw new Error(err.name);
+            throw new Error('Token Expired!');
         }
         throw new Error('Un-Authorized');
     }

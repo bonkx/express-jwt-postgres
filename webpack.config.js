@@ -1,9 +1,11 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
 const webpack = require('webpack');
 const path = require('path');
-const npm_package = require('./package.json');
-const CopyPlugin = require('copy-webpack-plugin');
+// const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const npm_package = require('./package.json');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -13,9 +15,9 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/',
-        filename: 'app.js',
+        // filename: 'app.js',
         // filename: '[name].bundle.js',
-        // filename: '[name].js',
+        filename: '[name].js',
     },
     plugins: [
         // to compress files
@@ -58,15 +60,15 @@ module.exports = {
             },
         ],
     },
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: 'all',
-    //     },
-    //     mangleWasmImports: true,
-    //     removeAvailableModules: true,
-    //     removeEmptyChunks: true,
-    //     mergeDuplicateChunks: true,
-    // },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+        mangleWasmImports: true,
+        removeAvailableModules: true,
+        removeEmptyChunks: true,
+        mergeDuplicateChunks: true,
+    },
     resolve: {
         modules: [__dirname, 'node_modules'],
         alias: npm_package._moduleAliases || {},

@@ -3,7 +3,7 @@
 const db = require('@src/entity/models');
 const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
 
-const { User, Profile, Role } = db;
+const { User, Profile } = db;
 const { Op } = db.Sequelize;
 
 async function findAll(req) {
@@ -26,14 +26,13 @@ async function findAll(req) {
         : null;
 
     try {
-        const data = await User.findAndCountAll({
+        const data = await User.scope('withoutPassword').findAndCountAll({
             where: condition,
             order: sortBy,
             offset,
             limit,
             include: [
                 { model: Profile, as: 'profile' },
-                { model: Role, as: 'role' },
             ],
         });
         const response = getPagingData(data, page, limit);
@@ -67,6 +66,9 @@ function findUserByBothUnique(email, username) {
 function findUserById(id) {
     return User.findOne({ where: { id } });
 }
+function findUserByIdNoPassword(id) {
+    return User.scope('withoutPassword').findOne({ where: { id } });
+}
 
 async function createUser(req) {
     try {
@@ -77,7 +79,7 @@ async function createUser(req) {
             last_name: req.body.last_name,
             password: req.body.password,
             phone_number: req.body.phone,
-            role_id: 2,
+            role: req.body.role,
         };
         // console.log(payload);
         const user = await User.create(payload);
@@ -88,7 +90,7 @@ async function createUser(req) {
             user_id: user.id,
         });
 
-        return user;
+        return findUserByIdNoPassword(user.id);
     } catch (err) {
         throw new Error(err.message);
     }
@@ -99,7 +101,6 @@ async function getUser(req) {
         const obj = await User.findByPk(req.params.id, {
             include: [
                 { model: Profile, as: 'profile' },
-                { model: Role, as: 'role' },
             ],
         });
         return obj;
@@ -134,6 +135,7 @@ module.exports = {
     deleteUser,
     findUserByEmail,
     findUserById,
+    findUserByIdNoPassword,
     findUserByBothUnique,
     findUserByUsername,
 };

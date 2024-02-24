@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 // Usually I keep the token between 5 minutes - 15 minutes
 function generateAccessToken(user) {
-    return jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET, {
+    return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_ACCESS_SECRET, {
         expiresIn: '15m',
     });
 }
@@ -13,7 +13,8 @@ function generateAccessToken(user) {
 // I would go for a maximum of 7 days, and make him login again after 7 days of inactivity.
 function generateRefreshToken(user, jti) {
     return jwt.sign({
-        userId: user.id,
+        id: user.id,
+        role: user.role,
         jti,
     }, process.env.JWT_REFRESH_SECRET, {
         expiresIn: '7d',

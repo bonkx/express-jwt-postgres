@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -59,7 +60,6 @@ router.post('/login', loginValidator, async (req, res, next) => {
         const { email, password } = req.body;
 
         const existingUser = await findUserByEmail(email);
-
         if (!existingUser) {
             res.status(404);
             throw new Error('Account not found.');
@@ -71,45 +71,45 @@ router.post('/login', loginValidator, async (req, res, next) => {
             throw new Error('Invalid login credentials.');
         }
 
-        // const jti = uuidv4();
-        // const { accessToken, refreshToken } = generateTokens(existingUser, jti);
-        // await addRefreshTokenToWhitelist({ jti, refreshToken, userId: existingUser.id });
+        const jti = uuidv4();
+        const { accessToken, refreshToken } = generateTokens(existingUser, jti);
+        await addRefreshTokenToWhitelist({ jti, refreshToken, userId: existingUser.id });
 
-        // res.json({
-        //     accessToken,
-        //     refreshToken,
-        // });
-        successRes(res);
+        const data = {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        };
+        successRes(res, data, 200, 'Login successful');
     } catch (err) {
         next(err);
     }
 });
 
-router.post('/refreshToken', async (req, res, next) => {
+router.post('/refresh', async (req, res, next) => {
     try {
-        const { refreshToken } = req.body;
-        if (!refreshToken) {
+        const { refresh_token } = req.body;
+        if (!refresh_token) {
             res.status(400);
             throw new Error('Missing refresh token.');
         }
-        const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const payload = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET);
         const savedRefreshToken = await findRefreshTokenById(payload.jti);
 
         if (!savedRefreshToken || savedRefreshToken.revoked === true) {
             res.status(401);
-            throw new Error('Unauthorized');
+            throw new Error('Invalid Refresh Token');
         }
 
-        const hashedToken = hashToken(refreshToken);
-        if (hashedToken !== savedRefreshToken.hashedToken) {
+        const hashedToken = hashToken(refresh_token);
+        if (hashedToken !== savedRefreshToken.hashed_token) {
             res.status(401);
-            throw new Error('Unauthorized');
+            throw new Error('Invalid Token');
         }
 
-        const user = await findUserById(payload.userId);
+        const user = await findUserById(payload.id);
         if (!user) {
             res.status(401);
-            throw new Error('Unauthorized');
+            throw new Error('Account not found');
         }
 
         await deleteRefreshToken(savedRefreshToken.id);
@@ -117,10 +117,11 @@ router.post('/refreshToken', async (req, res, next) => {
         const { accessToken, refreshToken: newRefreshToken } = generateTokens(user, jti);
         await addRefreshTokenToWhitelist({ jti, refreshToken: newRefreshToken, userId: user.id });
 
-        res.json({
-            accessToken,
-            refreshToken: newRefreshToken,
-        });
+        const data = {
+            access_token: accessToken,
+            refresh_token: newRefreshToken,
+        };
+        successRes(res, data);
     } catch (err) {
         next(err);
     }

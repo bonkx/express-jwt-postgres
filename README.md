@@ -62,13 +62,13 @@ $ npx sequelize-cli db:seed:all
   - [x] Make migration files using sequelize6-auto-migrations
   - [x] DB migrate using sequelize db:migrate
 - [ ] Auth
-  - [ ] Register, Send verification Email
-  - [ ] Send Email with Goroutines
+  - [x] Register
+  - [ ] Send Email with background task
   - [ ] Open Link Verification Email
   - [ ] Resend Verification Email Code
-  - [ ] Login
-  - [ ] JWT Auth Middleware + Redis
-  - [ ] Refresh Token
+  - [x] Login
+  - [x] JWT Auth Middleware
+  - [x] Refresh Token
   - [ ] Forgot Password, send email OTP
   - [ ] Forgot Password Verify OTP
   - [ ] Reset Password

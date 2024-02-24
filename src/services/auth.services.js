@@ -3,17 +3,15 @@ const db = require('@src/entity/models');
 const { hashToken } = require('@src/utils/hashToken');
 
 function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
-    return db.refreshToken.create({
-        data: {
-            id: jti,
-            hashedToken: hashToken(refreshToken),
-            userId,
-        },
+    return db.RefreshToken.create({
+        id: jti,
+        hashed_token: hashToken(refreshToken),
+        user_id: userId,
     });
 }
 
 function findRefreshTokenById(id) {
-    return db.refreshToken.findUnique({
+    return db.RefreshToken.findOne({
         where: {
             id,
         },
@@ -21,23 +19,21 @@ function findRefreshTokenById(id) {
 }
 
 function deleteRefreshToken(id) {
-    return db.refreshToken.update({
+    return db.RefreshToken.update({
+        revoked: true,
+    }, {
         where: {
             id,
-        },
-        data: {
-            revoked: true,
         },
     });
 }
 
 function revokeTokens(userId) {
-    return db.refreshToken.updateMany({
+    return db.RefreshToken.update({
+        revoked: true,
+    }, {
         where: {
-            userId,
-        },
-        data: {
-            revoked: true,
+            user_id: userId,
         },
     });
 }

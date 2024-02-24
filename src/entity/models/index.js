@@ -34,8 +34,6 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// db.User.belongsTo(db.Role, { as: 'role', foreignKey: 'role_id' });
-// db.Role.hasMany(db.User, { as: 'users', foreignKey: 'role_id' });
 // db.Profile.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
 // db.User.hasOne(db.Profile, { as: 'profile', foreignKey: 'user_id' });
 // db.RefreshToken.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
@@ -51,7 +49,6 @@ async function syncAll() {
     // await db.RefreshToken.sync({ force: true });
     // await db.Todo.sync({ force: true });
     // await db.Product.sync({ force: true });
-    // await db.Role.sync({ force: true });
     return '============== Synced DB ==============';
 }
 

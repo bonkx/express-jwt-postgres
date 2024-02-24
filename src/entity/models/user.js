@@ -4,6 +4,7 @@
 
 const bcrypt = require('bcryptjs');
 const { Model } = require('sequelize');
+const { Role } = require('@src/utils/role');
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -14,8 +15,6 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            this.belongsTo(models.Role, { as: 'role', foreignKey: 'role_id' });
-
             this.hasOne(models.Profile, { as: 'profile', foreignKey: 'user_id' });
             this.hasMany(models.RefreshToken, { as: 'refresh_tokens' });
             this.hasMany(models.Todo, { as: 'todos' });
@@ -63,6 +62,11 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 defaultValue: false,
             },
+            role: {
+                type: DataTypes.ENUM,
+                values: Object.values(Role),
+                defaultValue: Role.Member,
+            },
 
             /**
              * Virtual fields
@@ -84,9 +88,14 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: true,
             paranoid: true,
             underscored: true,
-            defaultScope: {
-                attributes: {
-                    exclude: ['password'],
+            // defaultScope: {
+            //     attributes: {
+            //         exclude: ['password'],
+            //     },
+            // },
+            scopes: {
+                withoutPassword: {
+                    attributes: { exclude: ['password'] },
                 },
             },
             hooks: {

@@ -14,7 +14,7 @@ module.exports = {
         //         phone_number: '+6281234567890',
         //         password: bcrypt.hashSync(process.env.ADMIN_PASS, 12),
         //         active: true,
-        //         role_id: 1,
+        //         role: 'admin,
         //         created_at: new Date(),
         //         updated_at: new Date(),
         //     },

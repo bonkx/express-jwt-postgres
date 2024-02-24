@@ -12,15 +12,11 @@
     "lint": "eslint --fix src",
     "build": "webpack",
     "prod": "node ./dist/app.js",
-    "makemigration": "npx makemigration",
+    "migration": "npx makemigration",
     "migrate": "npx sequelize db:migrate",
     "seed": "npx sequelize db:seed:all"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "dependencies": {
-    "@prisma/client": "^5.9.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
@@ -62,7 +58,6 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "nodemon": "^3.0.3",
-    "prisma": "^5.9.1",
     "sequelize-cli": "^6.6.2",
     "style-loader": "^3.3.4",
     "webpack": "^5.90.1",
