@@ -4,10 +4,11 @@
 // const db = new PrismaClient();
 
 function splitSortBy(sort) {
-    const sortBy = [];
+    let sortBy = {};
     if (sort) {
         const sp = sort.split('|');
-        sortBy.push(sp);
+        sortBy = { [sp[0]]: sp[1] };
+        // console.log(orderBy);
     }
     return sortBy;
 }
@@ -19,8 +20,7 @@ const getPagination = (page, size) => {
     return { limit, offset };
 };
 
-const getPagingData = (res, page, limit) => {
-    const { count, rows: data } = res;
+const getPagingData = (data, count, page, limit) => {
     const currentPage = page ? +page : 1;
     const totalPages = Math.ceil(count / limit);
 
@@ -29,4 +29,13 @@ const getPagingData = (res, page, limit) => {
     };
 };
 
-module.exports = { splitSortBy, getPagination, getPagingData };
+// Exclude keys from user
+function exclude(model, keys) {
+    return Object.fromEntries(
+        Object.entries(model).filter(([key]) => !keys.includes(key)),
+    );
+}
+
+module.exports = {
+    splitSortBy, getPagination, getPagingData, exclude,
+};

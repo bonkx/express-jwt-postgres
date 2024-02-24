@@ -1,10 +1,11 @@
+/* eslint-disable linebreak-style */
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
 const db = new PrismaClient();
 
 async function main() {
-    const adminRole = await db.role.upsert({
+    const adminRole = await db.roles.upsert({
         where: { id: 1 },
         update: {},
         create: {
@@ -12,7 +13,7 @@ async function main() {
             label: 'ADMIN',
         },
     });
-    const memberRole = await db.role.upsert({
+    const memberRole = await db.roles.upsert({
         where: { id: 2 },
         update: {},
         create: {
@@ -20,7 +21,7 @@ async function main() {
             label: 'MEMBER',
         },
     });
-    const staffRole = await db.role.upsert({
+    const staffRole = await db.roles.upsert({
         where: { id: 3 },
         update: {},
         create: {
@@ -29,7 +30,7 @@ async function main() {
         },
     });
 
-    const admin = await db.user.upsert({
+    const admin = await db.users.upsert({
         where: { email: 'admin@admin.com' },
         update: {},
         create: {
@@ -53,6 +54,7 @@ async function main() {
         adminRole, memberRole, staffRole, admin,
     });
 }
+
 main()
     .then(async () => {
         await db.$disconnect();

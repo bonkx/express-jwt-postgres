@@ -1,9 +1,13 @@
 /* eslint-disable import/no-unresolved */
-const db = require('@src/entity/models');
+const { PrismaClient } = require('@prisma/client');
+
+const db = new PrismaClient();
 const { hashToken } = require('@src/utils/hashToken');
 
+const { RefreshToken = db.refresh_tokens } = db;
+
 function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
-    return db.refreshToken.create({
+    return RefreshToken.create({
         data: {
             id: jti,
             hashedToken: hashToken(refreshToken),
@@ -13,7 +17,7 @@ function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
 }
 
 function findRefreshTokenById(id) {
-    return db.refreshToken.findUnique({
+    return RefreshToken.findUnique({
         where: {
             id,
         },
@@ -21,7 +25,7 @@ function findRefreshTokenById(id) {
 }
 
 function deleteRefreshToken(id) {
-    return db.refreshToken.update({
+    return RefreshToken.update({
         where: {
             id,
         },
@@ -32,7 +36,7 @@ function deleteRefreshToken(id) {
 }
 
 function revokeTokens(userId) {
-    return db.refreshToken.updateMany({
+    return RefreshToken.updateMany({
         where: {
             userId,
         },

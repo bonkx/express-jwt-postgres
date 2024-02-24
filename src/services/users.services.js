@@ -1,10 +1,14 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
-const db = require('@src/entity/models');
-const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
+const { PrismaClient } = require('@prisma/client');
 
-const { User, Profile, Role } = db;
-const { Op } = db.Sequelize;
+const db = new PrismaClient();
+
+const {
+    splitSortBy, getPagination, getPagingData, exclude,
+} = require('@src/utils/db');
+
+const { User = db.users, Profile = db.profiles, Role = db.roles } = db;
 
 async function findAll(req) {
     const {
@@ -12,33 +16,41 @@ async function findAll(req) {
     } = req.query;
 
     const { limit, offset } = getPagination(page, page_size);
+    console.log('limit: ', limit);
+    console.log('offset: ', offset);
 
     const sortBy = splitSortBy(sort);
+    console.log(sortBy);
 
     const condition = search
         ? {
-            [Op.or]: [
-                { first_name: { [Op.iLike]: `%${req.query.search}%` } },
-                { last_name: { [Op.iLike]: `%${req.query.search}%` } },
-                { email: { [Op.iLike]: `%${req.query.search}%` } },
+            OR: [
+                { first_name: { contains: `%${req.query.search}%` } },
+                { last_name: { contains: `%${req.query.search}%` } },
+                { email: { contains: `%${req.query.search}%` } },
             ],
         }
         : null;
 
     try {
-        const data = await User.findAndCountAll({
-            where: condition,
-            order: sortBy,
-            offset,
-            limit,
-            include: [
-                { model: Profile, as: 'profile' },
-                { model: Role, as: 'role' },
-            ],
+        const count = await User.count();
+        const data = await User.findMany({
+            // where: condition,
+            orderBy: sortBy,
+            skip: offset,
+            take: limit,
+            // include: {
+            //     roles: true,
+            //     profiles: true,
+            // },
+            // include: [
+            //     { model: Profile, as: 'profile' },
+            //     { model: Role, as: 'role' },
+            // ],
         });
-        const response = getPagingData(data, page, limit);
-        // console.log(response);
-        // console.log({ limit, offset });
+        // const xData = exclude(data, ['password']);
+
+        const response = getPagingData(data, count, page, limit);
         return response;
     } catch (err) {
         throw new Error(err.message);
@@ -46,26 +58,26 @@ async function findAll(req) {
 }
 
 function findUserByEmail(email) {
-    return User.findOne({ where: { email } });
+    return User.findUnique({ where: { email } });
 }
 
 function findUserByUsername(username) {
-    return User.findOne({ where: { username } });
+    return User.findUnique({ where: { username } });
 }
 
 function findUserByBothUnique(email, username) {
-    return User.findAll({
+    return User.findMany({
         where: {
-            [Op.or]: [
-                { username: { [Op.endsWith]: `%${username}%` } },
-                { email: { [Op.endsWith]: `%${email}%` } },
+            OR: [
+                { username: { contains: `%${username}%` } },
+                { email: { contains: `%${email}%` } },
             ],
         },
     });
 }
 
 function findUserById(id) {
-    return User.findOne({ where: { id } });
+    return User.findUnique({ where: { id } });
 }
 
 async function createUser(req) {
@@ -80,12 +92,15 @@ async function createUser(req) {
             role_id: 2,
         };
         // console.log(payload);
-        const user = await User.create(payload);
+        const user = await User.create({ data: payload });
+        delete user.password;
 
         // create user profile
         await Profile.create({
-            bio: `${payload.first_name} ${payload.last_name}`,
-            user_id: user.id,
+            data: {
+                bio: `${payload.first_name} ${payload.last_name}`,
+                user_id: user.id,
+            },
         });
 
         return user;
