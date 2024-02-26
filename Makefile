@@ -11,10 +11,10 @@ seed:
 	npx sequelize db:seed:all
 
 build:
-	npm run build
+	docker-compose build
 
 run:
-	npm run dev
+	docker-compose up --remove-orphans
 
 clean:
 	rm -rf package-lock.json 

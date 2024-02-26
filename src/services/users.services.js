@@ -66,8 +66,14 @@ function findUserByBothUnique(email, username) {
 function findUserById(id) {
     return User.findOne({ where: { id } });
 }
+
 function findUserByIdNoPassword(id) {
-    return User.scope('withoutPassword').findOne({ where: { id } });
+    return User.scope('withoutPassword').findOne({
+        where: { id },
+        include: [
+            { model: Profile, as: 'profile' },
+        ],
+    });
 }
 
 async function createUser(req) {
@@ -127,12 +133,38 @@ async function deleteUser(req) {
     }
 }
 
+async function updateProfile(req) {
+    try {
+        console.log('====== req user: ', req.user);
+        console.log(req.body);
+
+        const obj = await findUserByIdNoPassword(req.user.id);
+        obj.first_name = req.body.first_name;
+        obj.last_name = req.body.last_name;
+        obj.phone_number = req.body.phone_number;
+        if (req.body.birthday) {
+            obj.profile.birthday = req.body.birthday;
+        }
+        if (req.body.bio) {
+            obj.profile.bio = req.body.bio;
+        }
+
+        await obj.save();
+        await obj.profile.save();
+
+        return obj;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
 module.exports = {
     findAll,
     createUser,
     getUser,
     updateUser,
     deleteUser,
+    updateProfile,
     findUserByEmail,
     findUserById,
     findUserByIdNoPassword,

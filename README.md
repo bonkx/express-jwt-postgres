@@ -74,15 +74,15 @@ $ npx sequelize-cli db:seed:all
   - [ ] Reset Password
   - [ ] Logout
 - [ ] Account
-  - [ ] Get Profile
-  - [ ] Update Profile
+  - [x] Get Profile
+  - [x] Update Profile
   - [ ] Update Photo Profile + thumbnail
   - [ ] Upload File, upload image(compressed)
   - [ ] Change Password
   - [ ] Deletion Account with OTP
   - [ ] Recover deleted account (Admin role)
   - [ ] User Activity with interval (last login at, ip address in middleware)
-- [ ] Golang Swagger
+- [ ] Express JS Swagger
 - [ ] CRUD
   - [ ] Pagination with custom Paginate [pagination-using-gorm-scopes](https://dev.to/rafaelgfirmino/pagination-using-gorm-scopes-3k5f)
   - [ ] Sort + Search function in List Data
@@ -101,8 +101,8 @@ $ npx sequelize-cli db:seed:all
 - [ ] Image Processing with [libvips](https://www.libvips.org/)
 
 ### Credits
+
 https://github.com/dividedbynil/ko-architecture/tree/master  
 https://dev.to/mihaiandrei97/jwt-authentication-using-prisma-and-express-37nk  
 https://jwt-keys.21no.de/
 https://www.npmjs.com/package/sequelize6-auto-migrations
-

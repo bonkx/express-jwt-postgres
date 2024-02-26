@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 // dotenv at the top
 require('dotenv').config();
@@ -5,6 +6,7 @@ require('module-alias/register');
 require('express-group-routes');
 const rfs = require('rotating-file-stream');
 const compression = require('compression');
+const fileUpload = require('express-fileupload');
 const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
@@ -37,16 +39,11 @@ app.use(logger(
     { stream: accessLogStream },
 ));
 
-const corsOptions = {
-    origin: 'http://localhost:8000',
-};
-app.use(cors(corsOptions));
-
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
@@ -60,6 +57,17 @@ app.use(
         },
     }),
 );
+
+const corsOptions = {
+    origin: 'http://localhost:8000',
+};
+app.use(cors(corsOptions));
+
+app.use(fileUpload({
+    limits: { fileSize: 20 * 1024 * 1024 },
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+}));
 
 // Reduce Fingerprinting
 app.disable('x-powered-by');

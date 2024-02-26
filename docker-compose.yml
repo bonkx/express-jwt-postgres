@@ -1,5 +1,8 @@
 version: "3.8"
 services:
+  redis:
+    image: redis:7-alpine
+  
   postgres:
     image: postgres:16-alpine
     ports:
@@ -11,26 +14,21 @@ services:
     # restart: unless-stopped
 
   web:
-    stdin_open: true
     build:
       context: .
-    # command: sh -c "npm start"
-    # volumes:
-    #   - ./dist:/app/dist
+    command: npm run dev
+    volumes:
+      - ./:/app
+      - /app/node_modules
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     env_file:
       - .env
     depends_on:
       - postgres
-    # ports:
-    #   - "3000:3000"
-
-  nginx:
-    build:
-      context: ./nginx
+      - redis
     ports:
-      - "80:80"
+      - "3000:3000"
 
 volumes:
   postgres_data:
