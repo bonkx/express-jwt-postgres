@@ -15,6 +15,7 @@ const {
 const { successRes, errorRes } = require('@src/utils/response');
 const { generateTokens } = require('@src/utils/jwt');
 const { hashToken } = require('@src/utils/hashToken');
+const { sendMailRegister } = require('@src/services/mail.services');
 
 const router = express.Router();
 
@@ -25,6 +26,7 @@ router.post('/register', registerValidator, async (req, res, next) => {
             errorRes(res, errors.array(), 400);
         }
 
+        const payload = { ...req.body };
         const { email, username } = req.body;
 
         const existingUser = await findUserByEmail(email);
@@ -41,8 +43,8 @@ router.post('/register', registerValidator, async (req, res, next) => {
 
         const user = await createUser(req);
 
-        // TODO
-        // send email verifiaction
+        // TODO: send email verifiaction
+        await sendMailRegister(payload);
 
         successRes(res, user, 200, 'Registration has been successfully processed');
     } catch (err) {

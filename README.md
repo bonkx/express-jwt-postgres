@@ -1,10 +1,13 @@
 # express-jwt-postgres
 
-Express JS JWT Postgres with Sequelize ORM
+Express JS JWT Postgres with [Sequelize ORM](https://sequelize.org/docs/v6/getting-started/)
 
 ## How to Run
 
 ```bash
+# redis available
+$ redis-cli
+
 # clone the repo
 $ git clone repo
 
@@ -63,7 +66,7 @@ $ npx sequelize-cli db:seed:all
   - [x] DB migrate using sequelize db:migrate
 - [ ] Auth
   - [x] Register
-  - [ ] Send Email with background task
+  - [ ] Send Email with background task and Redis
   - [ ] Open Link Verification Email
   - [ ] Resend Verification Email Code
   - [x] Login
@@ -74,7 +77,7 @@ $ npx sequelize-cli db:seed:all
   - [ ] Reset Password
   - [ ] Logout
 - [ ] Account
-  - [ ] Get Profile
+  - [x] Get Profile
   - [ ] Update Profile
   - [ ] Update Photo Profile + thumbnail
   - [ ] Upload File, upload image(compressed)
@@ -84,12 +87,12 @@ $ npx sequelize-cli db:seed:all
   - [ ] User Activity with interval (last login at, ip address in middleware)
 - [ ] Golang Swagger
 - [ ] CRUD
-  - [ ] Pagination with custom Paginate [pagination-using-gorm-scopes](https://dev.to/rafaelgfirmino/pagination-using-gorm-scopes-3k5f)
-  - [ ] Sort + Search function in List Data
+  - [x] Pagination with Sequelize [Limits and Pagination](https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#limits-and-pagination)
+  - [x] Sort + Search function in List Data
   - [ ] Create Data
   - [ ] Edit Data
   - [ ] Delete Data
-- [ ] Preload Model (Associations Struct)
+- [x] Associations Sequelize Model
 - [ ] Struct MarshalJSON (Custom representation)
 - [ ] Open API with API KEY middleware
 - [ ] Upload Files
