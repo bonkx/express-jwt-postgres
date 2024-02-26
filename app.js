@@ -85,7 +85,7 @@ app.use('/api/v1/', routes);
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 
-// disable console.log system wide
+// disable console.log system wide in production
 if (process.env.NODE_ENV === 'production') {
     console.log = () => { };
     console.error = () => { };
