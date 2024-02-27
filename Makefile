@@ -11,6 +11,7 @@ seed:
 	npx sequelize db:seed:all
 
 build:
+	docker-compose down
 	docker-compose build
 
 run:
@@ -25,4 +26,4 @@ builserver:
 	docker-compose build
 
 runserver:
-	docker-compose up --remove-orphans
+	docker-compose up -d --remove-orphans
