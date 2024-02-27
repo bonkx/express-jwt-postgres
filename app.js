@@ -52,7 +52,9 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 // Set CSP headers to allow our Bootstrap and Jquery to be served
 app.use(
     helmet.contentSecurityPolicy({
+        useDefaults: true,
         directives: {
+            'img-src': ["'self'", 'https: data:'],
             'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
         },
     }),
@@ -76,6 +78,9 @@ app.use(compression()); // Compress all routes
 /* GET home page. */
 app.get('/', (req, res, next) => {
     res.render('index', { title: 'Express' });
+});
+app.get('/email/codepen', (req, res, next) => {
+    res.render('emails/codepen', { title: 'Express' });
 });
 app.get('/ping', (req, res) => res.json('pong'));
 
