@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 function generateAccessToken(user) {
     return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_ACCESS_SECRET, {
         expiresIn: '15m',
+        // 900s
     });
 }
 
@@ -18,6 +19,7 @@ function generateRefreshToken(user, jti) {
         jti,
     }, process.env.JWT_REFRESH_SECRET, {
         expiresIn: '7d',
+        // 604800s
     });
 }
 
