@@ -44,7 +44,7 @@ router.post('/register', registerValidator, async (req, res, next) => {
         const user = await createUser(req);
 
         // TODO: send email verifiaction
-        await sendMailRegister(payload);
+        await sendMailRegister(email, payload);
 
         successRes(res, user, 200, 'Registration has been successfully processed');
     } catch (err) {

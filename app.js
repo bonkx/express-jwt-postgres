@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 // dotenv at the top
@@ -14,10 +15,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const favicon = require('serve-favicon');
+const hbs = require('hbs');
+const myGlobalVariable = require('@src/utils/globalVar');
 
-const routes = require('./src/routes/index.route');
+const routes = require('@src/routes/index.route');
+const webRoutes = require('@src/routes/web.route');
 
-const middlewares = require('./src/middlewares/index');
+const middlewares = require('@src/middlewares/index');
 
 const app = express();
 app.locals.env = process.env;
@@ -42,6 +46,9 @@ app.use(logger(
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
+hbs.registerPartials(`${__dirname}/src/views/partials`, (err) => { });
+hbs.registerHelper('global', (key) => myGlobalVariable[key]);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -75,15 +82,8 @@ app.use(fileUpload({
 app.disable('x-powered-by');
 app.use(compression()); // Compress all routes
 
-/* GET home page. */
-app.get('/', (req, res, next) => {
-    res.render('index', { title: 'Express' });
-});
-app.get('/email/codepen', (req, res, next) => {
-    res.render('emails/codepen', { title: 'Express' });
-});
-app.get('/ping', (req, res) => res.json('pong'));
-
+// WEB ROUTES
+app.use('', webRoutes);
 // API ROUTES
 app.use('/api/v1/', routes);
 
