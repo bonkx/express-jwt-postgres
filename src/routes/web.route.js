@@ -12,15 +12,4 @@ router.get('/', (req, res, next) => {
 });
 router.get('/ping', (req, res) => res.json('pong'));
 
-router.get('/email/codepen', (req, res, next) => {
-    res.render('emails/codepen', { title: 'Express' });
-});
-router.get('/email/reg', (req, res, next) => {
-    res.render('emails/registration', {
-        name: 'Farrid',
-        verify_link: 'https://mailgen.js/confirm?s=d9729feb74992cc3482b350163a1a010',
-        type_of_action: 'Registration',
-    });
-});
-
 module.exports = router;

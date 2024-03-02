@@ -53,55 +53,55 @@ $ npx sequelize-cli db:seed:all
 
 ### Todo List
 
-- [x] Favicon using serve-favicon
-- [x] Morgan Log file
-- [x] Express Architecture Pattern
-  - [x] Routes (bridge - logic process)
-  - [x] Services (controller)
-  - [x] Sequelize ORM (process to DB)
-  - [x] Error Handling
-  - [x] Validator using express-validator
-- [x] DB
-  - [x] Make migration files using sequelize6-auto-migrations
-  - [x] DB migrate using sequelize db:migrate
-- [ ] Auth
-  - [x] Register
-  - [ ] Send Email with background task and Redis
-  - [ ] Open Link Verification Email
-  - [ ] Resend Verification Email Code
-  - [x] Login
-  - [x] JWT Auth Middleware
-  - [x] Refresh Token
-  - [ ] Forgot Password, send email OTP
-  - [ ] Forgot Password Verify OTP
-  - [ ] Reset Password
-  - [ ] Logout
-- [ ] Account
-  - [x] Get Profile
-  - [x] Update Profile
-  - [ ] Update Photo Profile + thumbnail
-  - [ ] Upload File, upload image(compressed)
-  - [ ] Change Password
-  - [ ] Deletion Account with OTP
-  - [ ] Recover deleted account (Admin role)
-  - [ ] User Activity with interval (last login at, ip address in middleware)
-- [ ] Express JS Swagger
-- [ ] CRUD
-  - [x] Pagination with Sequelize [Limits and Pagination](https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#limits-and-pagination)
-  - [x] Sort + Search function in List Data
-  - [ ] Create Data
-  - [ ] Edit Data
-  - [ ] Delete Data
-- [x] Associations Sequelize Model
-- [ ] Struct MarshalJSON (Custom representation)
-- [ ] Open API with API KEY middleware
-- [ ] Upload Files
-- [ ] Remove Files
-- [ ] Upload Videos
-- [ ] Create thumbnail from videos with ffmpeg
-- [ ] Upload Images and Compress Image with libvips
-- [ ] Create thumbnail from image
-- [ ] Image Processing with [libvips](https://www.libvips.org/)
+-   [x] Favicon using serve-favicon
+-   [x] Morgan Log file
+-   [x] Express Architecture Pattern
+    -   [x] Routes (bridge - logic process)
+    -   [x] Services (controller)
+    -   [x] Sequelize ORM (process to DB)
+    -   [x] Error Handling
+    -   [x] Validator using express-validator
+-   [x] DB
+    -   [x] Make migration files using sequelize6-auto-migrations
+    -   [x] DB migrate using sequelize db:migrate
+-   [ ] Auth
+    -   [x] Register
+    -   [x] Send Email with background task and Redis
+    -   [ ] Open Link Verification Email
+    -   [ ] Resend Verification Email Code
+    -   [x] Login
+    -   [x] JWT Auth Middleware
+    -   [x] Refresh Token
+    -   [ ] Forgot Password, send email OTP
+    -   [ ] Forgot Password Verify OTP
+    -   [ ] Reset Password
+    -   [ ] Logout
+-   [ ] Account
+    -   [x] Get Profile
+    -   [x] Update Profile
+    -   [ ] Update Photo Profile + thumbnail
+    -   [ ] Upload File, upload image(compressed)
+    -   [ ] Change Password
+    -   [ ] Deletion Account with OTP
+    -   [ ] Recover deleted account (Admin role)
+    -   [ ] User Activity with interval (last login at, ip address in middleware)
+-   [ ] Express JS Swagger
+-   [ ] CRUD
+    -   [x] Pagination with Sequelize [Limits and Pagination](https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#limits-and-pagination)
+    -   [x] Sort + Search function in List Data
+    -   [ ] Create Data
+    -   [ ] Edit Data
+    -   [ ] Delete Data
+-   [x] Associations Sequelize Model
+-   [ ] Struct MarshalJSON (Custom representation)
+-   [ ] Open API with API KEY middleware
+-   [ ] Upload Files
+-   [ ] Remove Files
+-   [ ] Upload Videos
+-   [ ] Create thumbnail from videos with ffmpeg
+-   [ ] Upload Images and Compress Image with libvips
+-   [ ] Create thumbnail from image
+-   [ ] Image Processing with [libvips](https://www.libvips.org/)
 
 ### Credits
 

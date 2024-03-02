@@ -26,7 +26,7 @@ router.post('/register', registerValidator, async (req, res, next) => {
             errorRes(res, errors.array(), 400);
         }
 
-        const payload = { ...req.body };
+        // const payload = { ...req.body };
         const { email, username } = req.body;
 
         const existingUser = await findUserByEmail(email);
@@ -44,7 +44,11 @@ router.post('/register', registerValidator, async (req, res, next) => {
         const user = await createUser(req);
 
         // TODO: send email verifiaction
-        await sendMailRegister(email, payload);
+        const emailPayload = {
+            name: user.name,
+            verify_link: `${process.env.BASE_URL}/confirm?code=asdasdasa23321312`,
+        };
+        await sendMailRegister(email, emailPayload);
 
         successRes(res, user, 200, 'Registration has been successfully processed');
     } catch (err) {

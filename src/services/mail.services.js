@@ -21,6 +21,7 @@ async function sendMailRegister(email, payload) {
         },
     });
 
+    const newVerificationEmail = `${process.env.BASE_URL}/account/resend-verification`;
     const response = {
         body: {
             name: payload.name,
@@ -33,7 +34,8 @@ async function sendMailRegister(email, payload) {
                     link: payload.verify_link,
                 },
             },
-            outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.',
+            outro: `This link will expire in 24 hours. If it has expired, try to <a target="_blank" href="${newVerificationEmail}">request a new verification email</a>. <br><br>`
+            + 'Need help, or have questions? Just reply to this email, we\'d love to help.',
         },
     };
 
