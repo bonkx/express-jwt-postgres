@@ -14,8 +14,9 @@ const {
 } = require('@src/services/auth.services');
 const { successRes, errorRes } = require('@src/utils/response');
 const { generateTokens } = require('@src/utils/jwt');
-const { hashToken } = require('@src/utils/hashToken');
+const { hashToken, encryptData } = require('@src/utils/hashToken');
 const { sendMailRegister } = require('@src/services/mail.services');
+const { isAuthenticated } = require('@src/middlewares');
 
 const router = express.Router();
 
@@ -43,10 +44,12 @@ router.post('/register', registerValidator, async (req, res, next) => {
 
         const user = await createUser(req);
 
-        // TODO: send email verifiaction
+        const token = crypto.randomBytes(32).toString('hex'); // save ke database
+        const encryptToken = encryptData(token); // send ke user
+
         const emailPayload = {
             name: user.name,
-            verify_link: `${process.env.BASE_URL}/confirm?code=asdasdasa23321312`,
+            verify_link: `${process.env.BASE_URL}/account/verify?token=${encryptToken}`,
         };
         await sendMailRegister(email, emailPayload);
 
@@ -102,19 +105,22 @@ router.post('/refresh', async (req, res, next) => {
         const savedRefreshToken = await findRefreshTokenById(payload.jti);
 
         if (!savedRefreshToken || savedRefreshToken.revoked === true) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Invalid Refresh Token');
         }
 
         const hashedToken = hashToken(refresh_token);
         if (hashedToken !== savedRefreshToken.hashed_token) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Invalid Token');
         }
 
         const user = await findUserById(payload.id);
         if (!user) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Account not found');
         }
 
@@ -133,13 +139,22 @@ router.post('/refresh', async (req, res, next) => {
     }
 });
 
+router.post('/logout', isAuthenticated, async (req, res, next) => {
+    try {
+        await revokeTokens(req.user.id);
+        successRes(res, {}, 200, 'You have been logged out successfully');
+    } catch (err) {
+        next(err);
+    }
+});
+
 // This endpoint is only for demo purpose.
 // Move this logic where you need to revoke the tokens( for ex, on password reset)
 router.post('/revokeRefreshTokens', async (req, res, next) => {
     try {
         const { userId } = req.body;
         await revokeTokens(userId);
-        res.json({ message: `Tokens revoked for user with id #${userId}` });
+        successRes(res, {}, 200, `Tokens revoked for user with id #${userId}`);
     } catch (err) {
         next(err);
     }
