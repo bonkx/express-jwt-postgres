@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 const express = require('express');
 const { successRes, errorRes } = require('@src/utils/response');
-const { findUserByIdNoPassword, updateProfile } = require('@src/services/users.services');
+const { findUserByIdNoPassword, updateProfile, uploadPhotoProfile } = require('@src/services/users.services');
 const { validationResult } = require('express-validator');
 const { updateUserValidator } = require('@src/middlewares/validators');
 
@@ -28,11 +28,13 @@ router.put('/update', updateUserValidator, async (req, res, next) => {
             errorRes(res, errors.array(), 400);
         }
 
-        const data = await updateProfile(req);
+        let data = await updateProfile(req);
         if (data === null) {
             res.status(404);
             throw new Error('Data not found!');
         }
+
+        data = await uploadPhotoProfile(req, res);
 
         successRes(res, data);
     } catch (err) {

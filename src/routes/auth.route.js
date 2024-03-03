@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 const express = require('express');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
@@ -73,6 +74,11 @@ router.post('/login', loginValidator, async (req, res, next) => {
         if (!existingUser) {
             res.status(404);
             throw new Error('Account not found.');
+        }
+
+        if (!existingUser.active) {
+            res.status(404);
+            throw new Error('Please verify your account.');
         }
 
         const validPassword = await bcrypt.compare(password, existingUser.password);

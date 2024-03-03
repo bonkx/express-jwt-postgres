@@ -53,6 +53,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 // Add helmet to the middleware chain.
@@ -73,9 +74,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(fileUpload({
-    limits: { fileSize: 20 * 1024 * 1024 },
-    useTempFiles: true,
-    tempFileDir: '/tmp/',
+    limits: { fileSize: 5 * 1024 * 1024 },
+    // useTempFiles: true,
+    // tempFileDir: '/tmp/',
 }));
 
 // Reduce Fingerprinting

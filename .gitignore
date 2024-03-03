@@ -18,3 +18,5 @@ benchmarks/graphs
 
 dist
 .env
+
+uploads/

@@ -7,4 +7,4 @@ const myGlobalVariable = {
 
 };
 
-module.exports = myGlobalVariable;
+module.exports = { myGlobalVariable };
