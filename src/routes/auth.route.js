@@ -17,6 +17,7 @@ const { generateTokens } = require('@src/utils/jwt');
 const { hashToken, encryptData } = require('@src/utils/hashToken');
 const { sendMailRegister } = require('@src/services/mail.services');
 const { isAuthenticated } = require('@src/middlewares');
+const { setBlackListToken } = require('@src/utils/redis');
 
 const router = express.Router();
 
@@ -141,8 +142,18 @@ router.post('/refresh', async (req, res, next) => {
 
 router.post('/logout', isAuthenticated, async (req, res, next) => {
     try {
-        await revokeTokens(req.user.id);
-        successRes(res, {}, 200, 'You have been logged out successfully');
+        const { authorization } = req.headers;
+        const token = authorization.split(' ')[1];
+        const { user } = req;
+        // console.log(user);
+        // console.log(token);
+        // console.log(user.exp);
+        await revokeTokens(user.id);
+
+        const token_key = `bl_${token}`;
+        await setBlackListToken(token_key, token, user.exp);
+
+        successRes(res, null, 200, 'You have been logged out successfully');
     } catch (err) {
         next(err);
     }
@@ -154,7 +165,7 @@ router.post('/revokeRefreshTokens', async (req, res, next) => {
     try {
         const { userId } = req.body;
         await revokeTokens(userId);
-        successRes(res, {}, 200, `Tokens revoked for user with id #${userId}`);
+        successRes(res, null, 200, `Tokens revoked for user with id #${userId}`);
     } catch (err) {
         next(err);
     }

@@ -3,12 +3,15 @@ const { check } = require('express-validator');
 const loginValidator = [
     check('email', 'Email is required').not().isEmpty(),
     check('email', 'Invalid email').isEmail(),
+    check('email', 'Invalid email').normalizeEmail(),
     check('password', 'The minimum password length is 4 characters').isLength({ min: 4 }),
 ];
 
 const registerValidator = [
     check('username', 'Username is required').not().isEmpty(),
+    check('email', 'Username is required').not().isEmpty(),
     check('email', 'Invalid email').isEmail(),
+    check('email', 'Invalid email').normalizeEmail(),
     check('first_name', 'First Name is required').not().isEmpty(),
     check('last_name', 'Last Name is required').not().isEmpty(),
     // check('age', 'username must be Alphanumeric').isAlphanumeric(),

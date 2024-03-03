@@ -9,12 +9,15 @@ function errorRes(res, err, statusCode = 500, errMsg = 'Request failed to proces
 }
 
 function successRes(res, data, statusCode = 200, sucMsg = 'Request has been processed successfully') {
-    return res.status(statusCode).json({
+    const payload = {
         success: true,
         responseCode: statusCode,
         responseMessage: sucMsg,
-        data,
-    });
+    };
+    if (data) {
+        payload.data = data;
+    }
+    return res.status(statusCode).json(payload);
 }
 
 function paginationRes(res, pagingData, statusCode = 200, sucMsg = 'Request has been processed successfully') {

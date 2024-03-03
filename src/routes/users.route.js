@@ -48,7 +48,7 @@ router.delete('/:id', async (req, res, next) => {
         const data = await deleteUser(req);
         console.log(data);
         if (data) {
-            successRes(res, {}, 200, 'Data deleted successfully!');
+            successRes(res, null, 200, 'Data deleted successfully!');
         }
 
         res.status(404);

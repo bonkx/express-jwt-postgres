@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
 // dotenv at the top
 require('dotenv').config();
 require('module-alias/register');
@@ -96,5 +96,14 @@ if (process.env.NODE_ENV === 'production') {
     console.error = () => { };
     console.debug = () => { };
 }
+
+// let redisClient = null;
+// (async () => {
+//     redisClient = redis.createClient();
+
+//     redisClient.on('error', (error) => console.error(`Redis Error : ${error}`));
+//     redisClient.on('connect', () => console.log('Redis connected!'));
+//     await redisClient.connect();
+// })();
 
 module.exports = app;
