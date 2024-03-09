@@ -34,7 +34,17 @@ router.put('/update', updateUserValidator, async (req, res, next) => {
             throw new Error('Data not found!');
         }
 
-        data = await uploadPhotoProfile(req, res);
+        data = await uploadPhotoProfile(req, res, req.user.id);
+
+        successRes(res, data);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/photo', async (req, res, next) => {
+    try {
+        const data = await uploadPhotoProfile(req, res, req.user.id);
 
         successRes(res, data);
     } catch (err) {

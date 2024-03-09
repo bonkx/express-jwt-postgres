@@ -2,8 +2,7 @@
 /* eslint-disable import/no-unresolved */
 const db = require('@src/entity/models');
 const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
-const upload = require('@src/middlewares/upload');
-const { uploadFile } = require('@src/utils/upload');
+const { uploadImage } = require('@src/utils/upload');
 
 const { User, Profile } = db;
 const { Op } = db.Sequelize;
@@ -162,57 +161,19 @@ async function updateProfile(req) {
     }
 }
 
-async function uploadPhotoProfile(req, res) {
+async function uploadPhotoProfile(req, res, userID) {
     try {
-        const obj = await findUserByIdNoPassword(req.user.id);
+        const obj = await findUserByIdNoPassword(userID);
         // upload file
         if (req.files) {
-            console.log(req.files);
-            console.log('upload file');
-            const filePath = await uploadFile(req, res);
+            // console.log(req.files);
+            // console.log('upload file');
+            const filePath = await uploadImage(req, res);
             console.log(filePath);
 
+            // save filePath into user profile image
             obj.profile.image = filePath;
             obj.save();
-
-            // const targetFile = req.files.file;
-            // // Rename the file to be uploaded
-            // const fileName = `${new Date().getTime()}-${targetFile.name}.webp`;
-
-            // const uploadPath = `${BASE_DIR}/uploads/`;
-            // const filePathName = uploadPath + fileName;
-
-            // targetFile.mv(filePathName, (err) => {
-            //     if (err) {
-            //         throw new Error(err.message);
-            //     }
-            //     console.log('File uploaded!');
-            // });
-
-            // const { data, name } = req.files.file;
-            // const timestamp = new Date().toISOString();
-            // const ref = `${timestamp}-${name}.webp`;
-            // console.log(ref);
-            // await sharp(data)
-            //     .webp({ quality: 50 })
-            //     .toFile(`./uploads/${ref}`);
-            // const link = `http://localhost:3000/${ref}`;
-            // console.log(link);
-            // return res.json({ link });
-            // upload(req, async (err) => {
-            //     if (err) {
-            //         throw new Error(err.message);
-            //     }
-            //     const { file } = req.files.file;
-            //     console.log(file);
-
-            //     const newFilePath = path.join(BASE_DIR, `${Date.now()}_${file.name}`);
-            //     // save newFilePath in your db as image path
-            //     await sharp(file.path).resize().jpeg({ quality: 50 }).toFile(newFilePath);
-            //     fs.unlinkSync(file.path);
-
-            //     // return res.status(200).json({ success: true, message: 'image uploaded' });
-            // });
         }
 
         return obj;

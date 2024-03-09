@@ -73,11 +73,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(fileUpload({
-    limits: { fileSize: 5 * 1024 * 1024 },
-    // useTempFiles: true,
-    // tempFileDir: '/tmp/',
-}));
+app.use(fileUpload());
 
 // Reduce Fingerprinting
 app.disable('x-powered-by');

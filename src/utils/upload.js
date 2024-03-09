@@ -3,26 +3,30 @@ const path = require('path');
 const imageSize = require('image-size');
 const fs = require('fs');
 
-async function uploadFile(req, res, folder = 'users') {
+async function uploadImage(req, res, folder = 'users') {
+    const FILELIMIT = (5 * 1024 * 1024); // 5Mb
+
     // const BASE_DIR = path.resolve('./');
     const UPLOAD_PATH = path.join(path.resolve('./'), '/uploads');
 
     const { data: buffer, name, size } = req.files.file;
     const originalname = path.parse(name).name;
-    console.log(buffer);
-    console.log(originalname);
+    // console.log(buffer);
+    // console.log(originalname);
     const dimension = imageSize(buffer);
     // console.log(dimension.width);
     // console.log(dimension.height);
     console.log('file size: ', size);
-    if (size > (5 * 1024 * 1024)) {
+    console.log('file limit: ', FILELIMIT);
+    if (size > FILELIMIT) {
         res.status(413);
         throw new Error('File too large');
     }
     const imageWidth = dimension.width;
-    let resizedWidth = Math.ceil(imageWidth * 0.8);
-    if (imageWidth > 1024) {
-        resizedWidth = 1024;
+    // let resizedWidth = Math.ceil(imageWidth * 0.9);
+    let resizedWidth = imageWidth;
+    if (imageWidth > 1920) {
+        resizedWidth = 1920;
     }
     console.log('resizedWidth: ', resizedWidth);
 
@@ -49,4 +53,4 @@ async function uploadFile(req, res, folder = 'users') {
     return filePath;
 }
 
-module.exports = { uploadFile };
+module.exports = { uploadImage };
