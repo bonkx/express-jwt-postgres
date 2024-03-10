@@ -3,6 +3,22 @@ const path = require('path');
 const imageSize = require('image-size');
 const fs = require('fs');
 
+function mkdirRecursiveSync(xpath) {
+    const paths = xpath.split(path.delimiter);
+    let dirPath = '';
+    paths.forEach((newPath) => {
+        if (dirPath === '') {
+            dirPath = newPath;
+        } else {
+            dirPath = `${dirPath}/${newPath}`;
+        }
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath);
+        }
+    });
+}
+
 async function uploadImage(req, res, folder = 'users') {
     const FILELIMIT = (5 * 1024 * 1024); // 5Mb
 
@@ -36,19 +52,22 @@ async function uploadImage(req, res, folder = 'users') {
         throw new Error('Invalid Image');
     }
 
-    const fileName = `${new Date().getTime()}-${originalname}.webp`;
-    const dirPath = `${folder}`;
+    // create media folder
+    const mediaPath = 'media';
+    mkdirRecursiveSync(`${UPLOAD_PATH}/${mediaPath}`);
+
+    const dirPath = `${mediaPath}/${folder}`;
     console.log(dirPath);
-    fs.access(`${UPLOAD_PATH}/${dirPath}`, (error) => {
-        if (error) {
-            fs.mkdirSync(`${UPLOAD_PATH}/${dirPath}`);
-        }
-    });
+    const fileName = `${new Date().getTime()}-${originalname}.webp`;
+    // create image folder
+    mkdirRecursiveSync(`${UPLOAD_PATH}/${dirPath}`);
+
     const filePath = `${dirPath}/${fileName}`;
+    const fullPathImage = `${UPLOAD_PATH}/${filePath}`;
     console.log(fileName);
     await sharp(buffer).resize(resizedWidth)
         .webp({ quality: 90 })
-        .toFile(`${UPLOAD_PATH}/${filePath}`);
+        .toFile(fullPathImage);
 
     return filePath;
 }

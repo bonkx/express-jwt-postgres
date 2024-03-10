@@ -80,7 +80,8 @@ $ npx sequelize-cli db:seed:all
     -   [x] Get Profile
     -   [x] Update Profile
     -   [ ] Update Photo Profile + thumbnail
-    -   [ ] Upload File, upload image(compressed)
+    -   [ ] Upload File
+    -   [x] Upload image(compressed)
     -   [ ] Change Password
     -   [ ] Deletion Account with OTP
     -   [ ] Recover deleted account (Admin role)
