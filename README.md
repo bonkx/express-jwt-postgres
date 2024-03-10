@@ -79,8 +79,8 @@ $ npx sequelize-cli db:seed:all
 -   [ ] Account
     -   [x] Get Profile
     -   [x] Update Profile
-    -   [ ] Update Photo Profile + thumbnail
-    -   [ ] Upload File
+    -   [x] Upload Photo Profile
+    -   [x] Upload File
     -   [x] Upload image(compressed)
     -   [ ] Change Password
     -   [ ] Deletion Account with OTP

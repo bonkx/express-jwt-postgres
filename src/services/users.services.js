@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unresolved */
 const db = require('@src/entity/models');
 const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
-const { uploadImage } = require('@src/utils/upload');
+const { processUploadPhotoProfile } = require('@src/utils/upload');
 
 const { User, Profile } = db;
 const { Op } = db.Sequelize;
@@ -168,7 +168,7 @@ async function uploadPhotoProfile(req, res, userID) {
         if (req.files) {
             // console.log(req.files);
             // console.log('upload file');
-            const filePath = await uploadImage(req, res);
+            const filePath = await processUploadPhotoProfile(req, res);
             console.log(filePath);
 
             // save filePath into user profile image
