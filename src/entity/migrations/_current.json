@@ -1,5 +1,48 @@
 {
     "tables": {
+        "otp_requests": {
+            "tableName": "otp_requests",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "email": {
+                    "field": "email",
+                    "seqType": "Sequelize.STRING"
+                },
+                "otp": {
+                    "field": "otp",
+                    "seqType": "Sequelize.STRING(6)"
+                },
+                "expired_at": {
+                    "field": "expired_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "is_used": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_used",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "products": {
             "tableName": "products",
             "schema": {
@@ -345,5 +388,5 @@
     "path": "C:\\Users\\Bonk\\Documents\\Dev\\ExpressJs\\express-jwt\\src\\entity\\migrations\\_current.json",
     "backupPath": "C:\\Users\\Bonk\\Documents\\Dev\\ExpressJs\\express-jwt\\src\\entity\\migrations\\_current_bak.json",
     "exists": true,
-    "revision": 2
+    "revision": 3
 }

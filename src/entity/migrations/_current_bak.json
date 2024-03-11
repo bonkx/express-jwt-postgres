@@ -301,10 +301,49 @@
                 }
             },
             "indexes": []
+        },
+        "verify_email": {
+            "tableName": "verify_email",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "email": {
+                    "field": "email",
+                    "seqType": "Sequelize.STRING"
+                },
+                "code": {
+                    "field": "code",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "verified_at": {
+                    "field": "verified_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "expired_at": {
+                    "field": "expired_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
         }
     },
     "path": "C:\\Users\\Bonk\\Documents\\Dev\\ExpressJs\\express-jwt\\src\\entity\\migrations\\_current.json",
     "backupPath": "C:\\Users\\Bonk\\Documents\\Dev\\ExpressJs\\express-jwt\\src\\entity\\migrations\\_current_bak.json",
     "exists": true,
-    "revision": 1
+    "revision": 2
 }
