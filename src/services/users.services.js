@@ -2,6 +2,7 @@
 /* eslint-disable import/no-unresolved */
 const db = require('@src/entity/models');
 const { splitSortBy, getPagination, getPagingData } = require('@src/utils/db');
+const { processUploadPhotoProfile } = require('@src/utils/upload');
 
 const { User, Profile } = db;
 const { Op } = db.Sequelize;
@@ -149,8 +150,31 @@ async function updateProfile(req) {
             obj.profile.bio = req.body.bio;
         }
 
+        // console.log(req.files.file);
+
         await obj.save();
         await obj.profile.save();
+
+        return obj;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+async function uploadPhotoProfile(req, res, userID) {
+    try {
+        const obj = await findUserByIdNoPassword(userID);
+        // upload file
+        if (req.files) {
+            // console.log(req.files);
+            // console.log('upload file');
+            const filePath = await processUploadPhotoProfile(req, res);
+            console.log(filePath);
+
+            // save filePath into user profile image
+            obj.profile.image = filePath;
+            obj.save();
+        }
 
         return obj;
     } catch (err) {
@@ -170,4 +194,5 @@ module.exports = {
     findUserByIdNoPassword,
     findUserByBothUnique,
     findUserByUsername,
+    uploadPhotoProfile,
 };

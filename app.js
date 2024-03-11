@@ -1,5 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-extraneous-dependencies */
 // dotenv at the top
 require('dotenv').config();
 require('module-alias/register');
@@ -14,10 +15,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const favicon = require('serve-favicon');
+const hbs = require('hbs');
 
-const routes = require('./src/routes/index.route');
+const routes = require('@src/routes/index.route');
+const webRoutes = require('@src/routes/web.route');
 
-const middlewares = require('./src/middlewares/index');
+const middlewares = require('@src/middlewares/index');
 
 const app = express();
 app.locals.env = process.env;
@@ -42,10 +45,13 @@ app.use(logger(
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
+hbs.registerPartials(`${__dirname}/src/views/partials`, (err) => { });
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 // Add helmet to the middleware chain.
@@ -55,7 +61,10 @@ app.use(
         useDefaults: true,
         directives: {
             'img-src': ["'self'", 'https: data:'],
-            'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+            'script-src': [
+                "'self'", "'unsafe-inline'",
+                'code.jquery.com', 'cdn.jsdelivr.net', 'cdnjs.cloudflare.com',
+            ],
         },
     }),
 );
@@ -65,25 +74,14 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(fileUpload({
-    limits: { fileSize: 20 * 1024 * 1024 },
-    useTempFiles: true,
-    tempFileDir: '/tmp/',
-}));
+app.use(fileUpload());
 
 // Reduce Fingerprinting
 app.disable('x-powered-by');
 app.use(compression()); // Compress all routes
 
-/* GET home page. */
-app.get('/', (req, res, next) => {
-    res.render('index', { title: 'Express' });
-});
-app.get('/email/codepen', (req, res, next) => {
-    res.render('emails/codepen', { title: 'Express' });
-});
-app.get('/ping', (req, res) => res.json('pong'));
-
+// WEB ROUTES
+app.use('', webRoutes);
 // API ROUTES
 app.use('/api/v1/', routes);
 
@@ -96,5 +94,14 @@ if (process.env.NODE_ENV === 'production') {
     console.error = () => { };
     console.debug = () => { };
 }
+
+// let redisClient = null;
+// (async () => {
+//     redisClient = redis.createClient();
+
+//     redisClient.on('error', (error) => console.error(`Redis Error : ${error}`));
+//     redisClient.on('connect', () => console.log('Redis connected!'));
+//     await redisClient.connect();
+// })();
 
 module.exports = app;

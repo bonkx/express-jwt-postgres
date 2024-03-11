@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 const express = require('express');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
-const { loginValidator, registerValidator } = require('@src/middlewares/validators');
+const { loginValidator, registerValidator, emailPayloadValidator } = require('@src/middlewares/validators');
 const {
     findUserByEmail, createUser, findUserById, findUserByUsername,
 } = require('@src/services/users.services');
@@ -14,8 +15,11 @@ const {
 } = require('@src/services/auth.services');
 const { successRes, errorRes } = require('@src/utils/response');
 const { generateTokens } = require('@src/utils/jwt');
-const { hashToken } = require('@src/utils/hashToken');
+const { hashToken, encryptData } = require('@src/utils/hashToken');
 const { sendMailRegister } = require('@src/services/mail.services');
+const { isAuthenticated } = require('@src/middlewares');
+const { setBlackListToken } = require('@src/utils/redis');
+const { createVerifyCode } = require('@src/services/verify_email.services');
 
 const router = express.Router();
 
@@ -26,7 +30,7 @@ router.post('/register', registerValidator, async (req, res, next) => {
             errorRes(res, errors.array(), 400);
         }
 
-        const payload = { ...req.body };
+        // const payload = { ...req.body };
         const { email, username } = req.body;
 
         const existingUser = await findUserByEmail(email);
@@ -43,10 +47,59 @@ router.post('/register', registerValidator, async (req, res, next) => {
 
         const user = await createUser(req);
 
-        // TODO: send email verifiaction
-        await sendMailRegister(payload);
+        const token = crypto.randomBytes(32).toString('hex');
+        // save token to verify_email DB
+        await createVerifyCode(email, token);
+
+        const encryptToken = encryptData(token); // send to user
+
+        const emailPayload = {
+            name: user.name,
+            verify_link: `${process.env.BASE_URL}/account/verify?token=${encryptToken}`,
+        };
+        await sendMailRegister(email, emailPayload);
 
         successRes(res, user, 200, 'Registration has been successfully processed');
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/request-code', emailPayloadValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            errorRes(res, errors.array(), 400);
+        }
+
+        // const payload = { ...req.body };
+        const { email } = req.body;
+
+        const existingUser = await findUserByEmail(email);
+        if (!existingUser) {
+            res.status(400);
+            throw new Error('Email not found. Please choose another.');
+        }
+
+        const user = existingUser;
+        if (user.active) {
+            res.status(422);
+            throw new Error('Your account has been verified!');
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        // save token to verify_email DB
+        await createVerifyCode(email, token);
+
+        const encryptToken = encryptData(token); // send to user
+
+        const emailPayload = {
+            name: user.name,
+            verify_link: `${process.env.BASE_URL}/account/verify?token=${encryptToken}`,
+        };
+        await sendMailRegister(email, emailPayload);
+
+        successRes(res, user, 200, 'Verification code has been successfully sent');
     } catch (err) {
         next(err);
     }
@@ -65,6 +118,11 @@ router.post('/login', loginValidator, async (req, res, next) => {
         if (!existingUser) {
             res.status(404);
             throw new Error('Account not found.');
+        }
+
+        if (!existingUser.active) {
+            res.status(404);
+            throw new Error('Please verify your account.');
         }
 
         const validPassword = await bcrypt.compare(password, existingUser.password);
@@ -98,19 +156,22 @@ router.post('/refresh', async (req, res, next) => {
         const savedRefreshToken = await findRefreshTokenById(payload.jti);
 
         if (!savedRefreshToken || savedRefreshToken.revoked === true) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Invalid Refresh Token');
         }
 
         const hashedToken = hashToken(refresh_token);
         if (hashedToken !== savedRefreshToken.hashed_token) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Invalid Token');
         }
 
         const user = await findUserById(payload.id);
         if (!user) {
-            res.status(401);
+            // pass status 403, frontend handle navigate to login page
+            res.status(403);
             throw new Error('Account not found');
         }
 
@@ -129,13 +190,32 @@ router.post('/refresh', async (req, res, next) => {
     }
 });
 
+router.post('/logout', isAuthenticated, async (req, res, next) => {
+    try {
+        const { authorization } = req.headers;
+        const token = authorization.split(' ')[1];
+        const { user } = req;
+        // console.log(user);
+        // console.log(token);
+        // console.log(user.exp);
+        await revokeTokens(user.id);
+
+        const token_key = `bl_${token}`;
+        await setBlackListToken(token_key, token, user.exp);
+
+        successRes(res, null, 200, 'You have been logged out successfully');
+    } catch (err) {
+        next(err);
+    }
+});
+
 // This endpoint is only for demo purpose.
 // Move this logic where you need to revoke the tokens( for ex, on password reset)
 router.post('/revokeRefreshTokens', async (req, res, next) => {
     try {
         const { userId } = req.body;
         await revokeTokens(userId);
-        res.json({ message: `Tokens revoked for user with id #${userId}` });
+        successRes(res, null, 200, `Tokens revoked for user with id #${userId}`);
     } catch (err) {
         next(err);
     }

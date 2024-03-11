@@ -1,7 +1,8 @@
 /* eslint-disable import/no-unresolved */
 const express = require('express');
 const { successRes, errorRes } = require('@src/utils/response');
-const { findUserByIdNoPassword, updateProfile } = require('@src/services/users.services');
+const { findUserByIdNoPassword, updateProfile, uploadPhotoProfile } = require('@src/services/users.services');
+const { uploadFile } = require('@src/services/upload.services');
 const { validationResult } = require('express-validator');
 const { updateUserValidator } = require('@src/middlewares/validators');
 
@@ -28,13 +29,38 @@ router.put('/update', updateUserValidator, async (req, res, next) => {
             errorRes(res, errors.array(), 400);
         }
 
-        const data = await updateProfile(req);
+        let data = await updateProfile(req);
         if (data === null) {
             res.status(404);
             throw new Error('Data not found!');
         }
 
+        data = await uploadPhotoProfile(req, res, req.user.id);
+
         successRes(res, data);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/photo', async (req, res, next) => {
+    try {
+        const data = await uploadPhotoProfile(req, res, req.user.id);
+
+        successRes(res, data);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/files', async (req, res, next) => {
+    try {
+        const data = await uploadFile(req, res);
+
+        const payload = {
+            file: data,
+        };
+        successRes(res, payload);
     } catch (err) {
         next(err);
     }

@@ -20,8 +20,10 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 'latest',
     },
+    ignorePatterns: ['temp.js', '**/migrations/*.js'],
     rules: {
         indent: ['error', 4],
         'no-console': 'off', // "warn" // "off"
+        'linebreak-style': 0,
     },
 };
