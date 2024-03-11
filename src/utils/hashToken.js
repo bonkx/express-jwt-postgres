@@ -1,8 +1,12 @@
 const crypto = require('crypto');
 
 const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+// const key = crypto.randomBytes(32);
+// const iv = crypto.randomBytes(16);
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
+// Generate secret hash with crypto to use for encryption
+const key = crypto.createHash('sha512').update(JWT_ACCESS_SECRET).digest('hex').substring(0, 32);
+const iv = crypto.createHash('sha512').update(JWT_REFRESH_SECRET).digest('hex').substring(0, 16);
 
 function hashToken(token) {
     return crypto.createHash('sha512').update(token).digest('hex');

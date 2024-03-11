@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
-const { loginValidator, registerValidator } = require('@src/middlewares/validators');
+const { loginValidator, registerValidator, emailPayloadValidator } = require('@src/middlewares/validators');
 const {
     findUserByEmail, createUser, findUserById, findUserByUsername,
 } = require('@src/services/users.services');
@@ -19,6 +19,7 @@ const { hashToken, encryptData } = require('@src/utils/hashToken');
 const { sendMailRegister } = require('@src/services/mail.services');
 const { isAuthenticated } = require('@src/middlewares');
 const { setBlackListToken } = require('@src/utils/redis');
+const { createVerifyCode } = require('@src/services/verify_email.services');
 
 const router = express.Router();
 
@@ -46,8 +47,11 @@ router.post('/register', registerValidator, async (req, res, next) => {
 
         const user = await createUser(req);
 
-        const token = crypto.randomBytes(32).toString('hex'); // save ke database
-        const encryptToken = encryptData(token); // send ke user
+        const token = crypto.randomBytes(32).toString('hex');
+        // save token to verify_email DB
+        await createVerifyCode(email, token);
+
+        const encryptToken = encryptData(token); // send to user
 
         const emailPayload = {
             name: user.name,
@@ -56,6 +60,46 @@ router.post('/register', registerValidator, async (req, res, next) => {
         await sendMailRegister(email, emailPayload);
 
         successRes(res, user, 200, 'Registration has been successfully processed');
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/request-code', emailPayloadValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            errorRes(res, errors.array(), 400);
+        }
+
+        // const payload = { ...req.body };
+        const { email } = req.body;
+
+        const existingUser = await findUserByEmail(email);
+        if (!existingUser) {
+            res.status(400);
+            throw new Error('Email not found. Please choose another.');
+        }
+
+        const user = existingUser;
+        if (user.active) {
+            res.status(422);
+            throw new Error('Your account has been verified!');
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        // save token to verify_email DB
+        await createVerifyCode(email, token);
+
+        const encryptToken = encryptData(token); // send to user
+
+        const emailPayload = {
+            name: user.name,
+            verify_link: `${process.env.BASE_URL}/account/verify?token=${encryptToken}`,
+        };
+        await sendMailRegister(email, emailPayload);
+
+        successRes(res, user, 200, 'Verification code has been successfully sent');
     } catch (err) {
         next(err);
     }

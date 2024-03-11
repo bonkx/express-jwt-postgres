@@ -65,9 +65,9 @@ $ npx sequelize-cli db:seed:all
     -   [x] Make migration files using sequelize6-auto-migrations
     -   [x] DB migrate using sequelize db:migrate
 -   [ ] Auth
-    -   [x] Register
+    -   [x] Register + Verification Link
     -   [x] Send Email with background task and Redis
-    -   [ ] Open Link Verification Email
+    -   [x] Open Link Verification Email
     -   [ ] Resend Verification Email Code
     -   [x] Login
     -   [x] JWT Auth Middleware
@@ -111,6 +111,7 @@ https://jwt-keys.21no.de/
 https://www.npmjs.com/package/sequelize6-auto-migrations
 https://supertokens.com/blog/revoking-access-with-a-jwt-blacklist
 https://rishi58rishi.medium.com/uploading-and-compressing-image-with-multer-and-sharp-i-3070ff2512ad
+https://dev.to/jobizil/encrypt-and-decrypt-data-in-nodejs-using-aes-256-cbc-2l6d
 
 ### Sequelize migration generator
 

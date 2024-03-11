@@ -18,12 +18,12 @@ router.get('/users', async (req, res, next) => {
 
 router.get('/common', async (req, res, next) => {
     try {
-        const token = crypto.randomBytes(32).toString('hex'); // save di database
-        const custToken = encryptData(token); // ke user
+        const token = crypto.randomBytes(32).toString('hex'); // save to database
+        const custToken = encryptData(token); // send to user
         console.log('token: ', token);
         console.log('custToken: ', custToken);
         const decryptToken = decryptData(custToken);
-        console.log(decryptToken);
+        console.log('decryptToken: ', decryptToken);
         if (decryptToken !== token) {
             res.status(401);
             throw new Error('Invalid Token');

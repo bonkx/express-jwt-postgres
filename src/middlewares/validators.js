@@ -1,5 +1,11 @@
 const { check } = require('express-validator');
 
+const emailPayloadValidator = [
+    check('email', 'Email is required').not().isEmpty(),
+    check('email', 'Invalid email').isEmail(),
+    check('email', 'Invalid email').normalizeEmail(),
+];
+
 const loginValidator = [
     check('email', 'Email is required').not().isEmpty(),
     check('email', 'Invalid email').isEmail(),
@@ -29,6 +35,7 @@ const updateUserValidator = [
 ];
 
 module.exports = {
+    emailPayloadValidator,
     loginValidator,
     registerValidator,
     updateUserValidator,
