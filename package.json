@@ -12,7 +12,7 @@
     "lint": "eslint --fix src",
     "build": "webpack",
     "prod": "node ./dist/app.js",
-    "migration": "npx makemigration",
+    "migration": "npx sequelize-mig migration:make",
     "migrate": "npx sequelize db:migrate",
     "seed": "npx sequelize db:seed:all"
   },
@@ -67,6 +67,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "nodemon": "^3.0.3",
     "sequelize-cli": "^6.6.2",
+    "sequelize-mig": "^3.1.3",
     "style-loader": "^3.3.4",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"

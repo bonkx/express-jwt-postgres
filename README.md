@@ -80,7 +80,6 @@ $ npx sequelize-cli db:seed:all
     -   [x] Get Profile
     -   [x] Update Profile
     -   [x] Upload Photo Profile
-    -   [x] Upload File
     -   [x] Upload image(compressed)
     -   [ ] Change Password
     -   [ ] Deletion Account with OTP
@@ -94,9 +93,9 @@ $ npx sequelize-cli db:seed:all
     -   [ ] Edit Data
     -   [ ] Delete Data
 -   [x] Associations Sequelize Model
--   [ ] Struct MarshalJSON (Custom representation)
+-   [ ] Virtual field (Custom representation)
 -   [ ] Open API with API KEY middleware
--   [ ] Upload Files
+-   [x] Upload Files
 -   [ ] Remove Files
 -   [ ] Upload Videos
 -   [ ] Create thumbnail from videos with ffmpeg
@@ -112,3 +111,19 @@ https://jwt-keys.21no.de/
 https://www.npmjs.com/package/sequelize6-auto-migrations
 https://supertokens.com/blog/revoking-access-with-a-jwt-blacklist
 https://rishi58rishi.medium.com/uploading-and-compressing-image-with-multer-and-sharp-i-3070ff2512ad
+
+### Sequelize migration generator
+
+https://www.npmjs.com/package/sequelize-mig
+
+Create migration:
+
+```bash
+$ npx sequelize-mig migration:make -n <migration name>
+```
+
+Preview migration:
+
+```bash
+$ npx sequelize-mig migration:make --preview
+```

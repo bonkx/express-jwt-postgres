@@ -43,23 +43,9 @@ db.Sequelize = Sequelize;
 // db.Product.belongsTo(db.User, { as: 'user', foreignKey: 'user_id' });
 // db.User.hasMany(db.Product, { as: 'products', foreignKey: 'user_id' });
 
-async function syncAll() {
-    // await db.User.sync({ force: true });
-    // await db.Profile.sync({ force: true });
-    // await db.RefreshToken.sync({ force: true });
-    // await db.Todo.sync({ force: true });
-    // await db.Product.sync({ force: true });
-    return '============== Synced DB ==============';
-}
-
-syncAll().then((res) => {
-    console.log(res);
-}).catch((err) => {
-    console.log(`Failed to sync db: ${err.message}`);
-});
-
 // db.sequelize
-//     .sync({ force: true })
+//     .sync({ alter: true })
+//     // .sync({ force: true })
 //     // .drop()
 //     .then(() => {
 //         console.log('============== Synced DB ==============');
