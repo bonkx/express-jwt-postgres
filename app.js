@@ -16,7 +16,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const favicon = require('serve-favicon');
 const hbs = require('hbs');
-const myGlobalVariable = require('@src/utils/globalVar');
 
 const routes = require('@src/routes/index.route');
 const webRoutes = require('@src/routes/web.route');
@@ -47,7 +46,6 @@ app.use(logger(
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(`${__dirname}/src/views/partials`, (err) => { });
-hbs.registerHelper('global', (key) => myGlobalVariable[key]);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,7 +61,10 @@ app.use(
         useDefaults: true,
         directives: {
             'img-src': ["'self'", 'https: data:'],
-            'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+            'script-src': [
+                "'self'", "'unsafe-inline'",
+                'code.jquery.com', 'cdn.jsdelivr.net', 'cdnjs.cloudflare.com',
+            ],
         },
     }),
 );

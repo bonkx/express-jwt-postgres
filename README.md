@@ -68,7 +68,7 @@ $ npx sequelize-cli db:seed:all
     -   [x] Register + Verification Link
     -   [x] Send Email with background task and Redis
     -   [x] Open Link Verification Email
-    -   [ ] Resend Verification Email Code
+    -   [x] Resend Verification Email Code
     -   [x] Login
     -   [x] JWT Auth Middleware
     -   [x] Refresh Token
