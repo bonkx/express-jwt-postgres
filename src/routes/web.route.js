@@ -23,4 +23,8 @@ router.get('/account/verify', async (req, res, next) => {
     res.render('verify_email', { title: 'Account Verification', msg });
 });
 
+router.get('/account/resend-verification', async (req, res, next) => {
+    res.render('new_verification', { title: 'Request a new verification email' });
+});
+
 module.exports = router;
